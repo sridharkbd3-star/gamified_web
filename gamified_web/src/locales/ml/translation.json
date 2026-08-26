@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "S.H.I.E.L.D.",
+    "subtitle": "ടെസെറാക്ട് സ്റ്റെം ഹീറോ",
+    "motto": "അറിവ് ഭാവി രൂപപ്പെടുത്തുന്നു."
+  },
+  "languages": {
+    "selectLanguage": "ഭാഷ തിരഞ്ഞെടുക്കുക",
+    "en": "English",
+    "ta": "தமிழ்",
+    "hi": "हिन्दी",
+    "ml": "മലയാളം"
+  },
+  "nav": {
+    "dashboard": "ഡാഷ്ബോർഡ്",
+    "profile": "പ്രൊഫൈൽ",
+    "language": "ഭാഷ",
+    "backToStory": "കഥയിലേക്ക് മടങ്ങുക",
+    "yourJourney": "നിങ്ങളുടെ യാത്ര",
+    "progress": "പുരോഗതി",
+    "achievements": "നേട്ടങ്ങൾ",
+    "stones": "കല്ലുകൾ",
+    "points": "പോയിന്റുകൾ",
+    "fieldGuide": "ഫീൽഡ് ഗൈഡ്",
+    "inventory": "ഇൻവെന്ററി",
+    "settings": "ക്രമീകരണങ്ങൾ",
+    "signOut": "സൈൻ ഔട്ട് ചെയ്യുക",
+    "back": "മടങ്ങുക"
+  },
+  "domains": {
+    "science": "ശാസ്ത്രം",
+    "technology": "സാങ്കേതികവിദ്യ",
+    "engineering": "എഞ്ചിനീയറിംഗ്",
+    "mathematics": "ഗണിതശാസ്ത്രം",
+    "scienceDesc": "പ്രകൃതി പ്രപഞ്ചത്തിന്റെ രഹസ്യങ്ങൾ അൺലോക്ക് ചെയ്യുക.",
+    "technologyDesc": "ഭാവി രൂപപ്പെടുത്തുന്ന ഉപകരണങ്ങൾ നിർമ്മിക്കുക.",
+    "engineeringDesc": "യഥാർത്ഥ ലോകത്തിലെ പ്രശ്നങ്ങൾ രൂപകൽപ്പന ചെയ്ത് പരിഹരിക്കുക.",
+    "mathematicsDesc": "പാറ്റേണുകളുടെയും യുക്തിയുടെയും ഭാഷയിൽ വൈദഗ്ദ്ധ്യം നേടുക."
+  },
+  "actions": {
+    "startLearning": "പഠനം ആരംഭിക്കുക",
+    "startMission": "ദൗത്യം ആരംഭിക്കുക",
+    "continue": "തുടരുക",
+    "nextMission": "അടുത്ത മിഷൻ",
+    "checkAnswer": "എന്റെ ഉത്തരം പരിശോധിക്കുക",
+    "enterDomain": "ഡൊമെയ്‌നിലേക്ക് പ്രവേശിക്കുക",
+    "enterStage": "ഘട്ടത്തിലേക്ക് പ്രവേശിക്കുക",
+    "needHint": "സൂചന വേണോ?",
+    "hideHint": "സൂചന മറയ്ക്കുക",
+    "tryAgain": "വീണ്ടും ശ്രമിക്കുക"
+  },
+  "progress": {
+    "overall": "ആകെ പുരോഗതി",
+    "completed": "പൂർത്തിയായി",
+    "locked": "പൂട്ടിയിരിക്കുന്നു",
+    "secured": "സുരക്ഷിതമാക്കി",
+    "xp": "XP",
+    "level": "ലെവൽ",
+    "stage": "ഘട്ടം",
+    "mission": "ദൗത്യം"
+  },
+  "stones": {
+    "scienceStone": "ലൂമിനൽ സ്റ്റോൺ",
+    "technologyStone": "സർക്യൂട്ട് സ്റ്റോൺ",
+    "engineeringStone": "ഫോർജ് സ്റ്റോൺ",
+    "mathematicsStone": "ആക്സിയം സ്റ്റോൺ",
+    "collectedFormat": "4-ൽ {{count}} കല്ലുകൾ ശേഖരിച്ചു",
+    "acquired": "കല്ല് ലഭിച്ചു",
+    "mastered": "വൈദഗ്ദ്ധ്യം നേടി"
+  },
+  "story": {
+    "futureSelf": "ഭാവി രൂപം",
+    "youngMan": "മൊറേൽസ്",
+    "tesseract": "ടെസെറാക്ട്",
+    "timePortal": "ടൈം പോർട്ടൽ",
+    "choosePath": "നിങ്ങളുടെ പാത തിരഞ്ഞെടുക്കുക."
+  },
+  "finalConclusion": {
+    "fourStones": "നാല് കല്ലുകൾ സ്ഥാപിച്ചു",
+    "tesseractActivated": "ടെസെറാക്ട് സജീവമാക്കി",
+    "hero": "സ്റ്റെം ഹീറോ",
+    "ending": "അറിവ് ഭാവി രൂപപ്പെടുത്തുന്നു."
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "S.H.I.E.L.D.",
+    "subtitle": "टेसेरैक्ट स्टेम हीरो",
+    "motto": "ज्ञान भविष्य को आकार देता है।"
+  },
+  "languages": {
+    "selectLanguage": "भाषा चुनें",
+    "en": "English",
+    "ta": "தமிழ்",
+    "hi": "हिन्दी",
+    "ml": "മലയാളം"
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "profile": "प्रोफ़ाइल",
+    "language": "भाषा",
+    "backToStory": "कहानी पर वापस जाएँ",
+    "yourJourney": "आपकी यात्रा",
+    "progress": "प्रगति",
+    "achievements": "उपलब्धियाँ",
+    "stones": "स्टोन",
+    "points": "अंक",
+    "fieldGuide": "फील्ड गाइड",
+    "inventory": "इन्वेंटरी",
+    "settings": "सेटिंग्स",
+    "signOut": "साइन आउट",
+    "back": "पीछे"
+  },
+  "domains": {
+    "science": "विज्ञान",
+    "technology": "प्रौद्योगिकी",
+    "engineering": "इंजीनियरिंग",
+    "mathematics": "गणित",
+    "scienceDesc": "प्राकृतिक ब्रह्मांड के रहस्यों को अनलॉक करें।",
+    "technologyDesc": "भविष्य को आकार देने वाले उपकरण बनाएं।",
+    "engineeringDesc": "वास्तविक दुनिया की समस्याओं को डिज़ाइन करें और हल करें।",
+    "mathematicsDesc": "पैटर्न और तर्क की भाषा में महारत हासिल करें।"
+  },
+  "actions": {
+    "startLearning": "सीखना शुरू करें",
+    "startMission": "मिशन शुरू करें",
+    "continue": "जारी रखें",
+    "nextMission": "अगला मिशन",
+    "checkAnswer": "मेरा उत्तर जांचें",
+    "enterDomain": "डोमेन में प्रवेश करें",
+    "enterStage": "चरण में प्रवेश करें",
+    "needHint": "संकेत चाहिए?",
+    "hideHint": "संकेत छिपाएं",
+    "tryAgain": "पुनः प्रयास करें"
+  },
+  "progress": {
+    "overall": "कुल प्रगति",
+    "completed": "पूर्ण",
+    "locked": "लॉक किया गया",
+    "secured": "सुरक्षित",
+    "xp": "XP",
+    "level": "स्तर",
+    "stage": "चरण",
+    "mission": "मिशन"
+  },
+  "stones": {
+    "scienceStone": "ल्यूमिनल स्टोन",
+    "technologyStone": "सर्किट स्टोन",
+    "engineeringStone": "फ़ोर्ज स्टोन",
+    "mathematicsStone": "एक्सिओम स्टोन",
+    "collectedFormat": "4 में से {{count}} स्टोन एकत्रित",
+    "acquired": "स्टोन प्राप्त हुआ",
+    "mastered": "डोमेन में महारत"
+  },
+  "story": {
+    "futureSelf": "भविष्य का रूप",
+    "youngMan": "मोरालेस",
+    "tesseract": "टेसेरैक्ट",
+    "timePortal": "समय पोर्टल",
+    "choosePath": "अपना मार्ग चुनें।"
+  },
+  "finalConclusion": {
+    "fourStones": "चारों स्टोन स्थापित",
+    "tesseractActivated": "टेसेरैक्ट सक्रिय",
+    "hero": "स्टेम हीरो",
+    "ending": "ज्ञान भविष्य को आकार देता है।"
+  }
+}

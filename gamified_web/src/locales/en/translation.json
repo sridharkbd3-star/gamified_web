@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "S.H.I.E.L.D.",
+    "subtitle": "TESSERACT STEM HERO",
+    "motto": "KNOWLEDGE SHAPES THE FUTURE."
+  },
+  "languages": {
+    "selectLanguage": "SELECT LANGUAGE",
+    "en": "English",
+    "ta": "தமிழ்",
+    "hi": "हिन्दी",
+    "ml": "മലയാളം"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "language": "Language",
+    "backToStory": "Back to Story",
+    "yourJourney": "Your Journey",
+    "progress": "Progress",
+    "achievements": "Achievements",
+    "stones": "Stones",
+    "points": "Points",
+    "fieldGuide": "Field Guide",
+    "inventory": "Inventory",
+    "settings": "Settings",
+    "signOut": "Sign Out",
+    "back": "Back"
+  },
+  "domains": {
+    "science": "Science",
+    "technology": "Technology",
+    "engineering": "Engineering",
+    "mathematics": "Mathematics",
+    "scienceDesc": "Unlock the secrets of the natural universe.",
+    "technologyDesc": "Build the tools that shape the future.",
+    "engineeringDesc": "Design, build, and solve real-world problems.",
+    "mathematicsDesc": "Master the language of patterns and logic."
+  },
+  "actions": {
+    "startLearning": "Start Learning",
+    "startMission": "START MISSION",
+    "continue": "Continue",
+    "nextMission": "NEXT MISSION",
+    "checkAnswer": "CHECK MY ANSWER",
+    "enterDomain": "ENTER DOMAIN",
+    "enterStage": "Enter Stage",
+    "needHint": "Need a Hint?",
+    "hideHint": "Hide Hint",
+    "tryAgain": "TRY AGAIN"
+  },
+  "progress": {
+    "overall": "Overall Progress",
+    "completed": "Completed",
+    "locked": "LOCKED",
+    "secured": "SECURED",
+    "xp": "XP",
+    "level": "Level",
+    "stage": "Stage",
+    "mission": "Mission"
+  },
+  "stones": {
+    "scienceStone": "The Luminal Stone",
+    "technologyStone": "The Circuit Stone",
+    "engineeringStone": "The Forge Stone",
+    "mathematicsStone": "The Axiom Stone",
+    "collectedFormat": "{{count}} / 4 Stones Collected",
+    "acquired": "STONE ACQUIRED",
+    "mastered": "DOMAIN MASTERED"
+  },
+  "story": {
+    "futureSelf": "Future Self",
+    "youngMan": "Morales",
+    "tesseract": "Tesseract",
+    "timePortal": "Time Portal",
+    "choosePath": "Choose your path."
+  },
+  "finalConclusion": {
+    "fourStones": "Four Stones Placed",
+    "tesseractActivated": "Tesseract Activated",
+    "hero": "STEM Hero",
+    "ending": "KNOWLEDGE SHAPES THE FUTURE."
+  }
+}

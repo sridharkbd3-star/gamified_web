@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "S.H.I.E.L.D.",
+    "subtitle": "டெசெராக்ட் ஸ்டெம் ஹீரோ",
+    "motto": "அறிவு எதிர்காலத்தை உருவாக்குகிறது."
+  },
+  "languages": {
+    "selectLanguage": "மொழியைத் தேர்ந்தெடுக்கவும்",
+    "en": "English",
+    "ta": "தமிழ்",
+    "hi": "हिन्दी",
+    "ml": "മലയാളം"
+  },
+  "nav": {
+    "dashboard": "டாஷ்போர்டு",
+    "profile": "சுயவிவரம்",
+    "language": "மொழி",
+    "backToStory": "கதைக்குத் திரும்பு",
+    "yourJourney": "உங்கள் பயணம்",
+    "progress": "முன்னேற்றம்",
+    "achievements": "சாதனைகள்",
+    "stones": "கற்கள்",
+    "points": "புள்ளிகள்",
+    "fieldGuide": "கள வழிகாட்டி",
+    "inventory": "சரக்கு",
+    "settings": "அமைப்புகள்",
+    "signOut": "வெளியேறு",
+    "back": "பின்னால்"
+  },
+  "domains": {
+    "science": "அறிவியல்",
+    "technology": "தொழில்நுட்பம்",
+    "engineering": "பொறியியல்",
+    "mathematics": "கணிதம்",
+    "scienceDesc": "இயற்கை பிரபஞ்சத்தின் ரகசியங்களைத் திறக்கவும்.",
+    "technologyDesc": "எதிர்காலத்தை உருவாக்கும் கருவிகளை உருவாக்குங்கள்.",
+    "engineeringDesc": "உண்மையான உலகப் பிரச்சினைகளை வடிவமைப்பு செய்து தீர்க்கவும்.",
+    "mathematicsDesc": "வடிவங்கள் மற்றும் தர்க்கத்தின் மொழியில் தேர்ச்சி பெறுங்கள்."
+  },
+  "actions": {
+    "startLearning": "கற்றலைத் தொடங்கு",
+    "startMission": "பணியைத் தொடங்கு",
+    "continue": "தொடரவும்",
+    "nextMission": "அடுத்த பணி",
+    "checkAnswer": "எனது பதிலைச் சரிபார்க்கவும்",
+    "enterDomain": "பகுதியில் நுழைக",
+    "enterStage": "கட்டத்தில் நுழைக",
+    "needHint": "குறிப்பு தேவையா?",
+    "hideHint": "குறிப்பை மறை",
+    "tryAgain": "மீண்டும் முயற்சிக்கவும்"
+  },
+  "progress": {
+    "overall": "ஒட்டுமொத்த முன்னேற்றம்",
+    "completed": "நிறைவடைந்தது",
+    "locked": "பூட்டப்பட்டது",
+    "secured": "பாதுகாக்கப்பட்டது",
+    "xp": "எக்ஸ்பி",
+    "level": "நிலை",
+    "stage": "கட்டம்",
+    "mission": "பணி"
+  },
+  "stones": {
+    "scienceStone": "ஒளிமக் கல்",
+    "technologyStone": "சுற்றுவழிக் கல்",
+    "engineeringStone": "உலைக்கல்",
+    "mathematicsStone": "அடிப்படைக் கல்",
+    "collectedFormat": "4-ல் {{count}} கற்கள் சேகரிக்கப்பட்டன",
+    "acquired": "கல் பெறப்பட்டது",
+    "mastered": "பகுதியில் தேர்ச்சி பெறப்பட்டது"
+  },
+  "story": {
+    "futureSelf": "எதிர்கால தான்",
+    "youngMan": "மொரேல்ஸ்",
+    "tesseract": "டெசெராக்ட்",
+    "timePortal": "கால நுழைவாயில்",
+    "choosePath": "உங்கள் பாதையைத் தேர்ந்தெடுக்கவும்."
+  },
+  "finalConclusion": {
+    "fourStones": "நான்கு கற்கள் பொருத்தப்பட்டன",
+    "tesseractActivated": "டெசெராக்ட் செயலாக்கப்பட்டது",
+    "hero": "ஸ்டெம் ஹீரோ",
+    "ending": "அறிவு எதிர்காலத்தை உருவாக்குகிறது."
+  }
+}
