@@ -14,9 +14,10 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import type { GameState, GameAction, DomainId, StoneId } from '../types';
+import type { GameState, GameAction, DomainId, StoneId, UserRole } from '../types';
 import { DEFAULT_PLAYER } from '../data/player';
 import { saveGameState, loadGameState, resetGameState, saveUserGameState, loadUserGameState, loadSessionEmail } from '../utils/gameStorage';
+import { syncStudentStateToRoster } from '../utils/studentData';
 
 // ----------------------------------------------------------
 // INITIAL STATE
@@ -37,6 +38,7 @@ export const INITIAL_GAME_STATE: GameState = {
   stagePerformance: {},
   _version: 1,
   currentUserEmail: null,
+  userRole: 'student',
   hasSeenIntroStory: false,
 };
 
@@ -136,11 +138,17 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
     case 'LOGIN_USER': {
       const baseState = action.progressState ?? INITIAL_GAME_STATE;
+      const role: UserRole = action.role ?? baseState.userRole ?? 'student';
+      const targetScene = role === 'teacher'
+        ? 'TEACHER_DASHBOARD'
+        : (baseState.hasSeenIntroStory ? 'MAIN_INTERFACE' : 'INTRO');
+
       return {
         ...INITIAL_GAME_STATE,
         ...baseState,
         currentUserEmail: action.email,
-        currentScene: baseState.hasSeenIntroStory ? 'MAIN_INTERFACE' : 'INTRO',
+        userRole: role,
+        currentScene: targetScene,
       };
     }
 
@@ -148,6 +156,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...INITIAL_GAME_STATE,
         currentUserEmail: null,
+        userRole: 'student',
         currentScene: 'LANDING',
       };
 
@@ -165,6 +174,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...INITIAL_GAME_STATE,
         ...action.state,
+        userRole: action.state?.userRole ?? 'student',
         player: {
           ...INITIAL_GAME_STATE.player,
           ...(action.state?.player ?? {}),
@@ -216,6 +226,7 @@ export function GameStateProvider({ children }: GameStateProviderProps) {
           ...INITIAL_GAME_STATE,
           ...saved,
           currentScene: 'LANDING' as const,
+          userRole: saved.userRole ?? 'student',
           player: {
             ...INITIAL_GAME_STATE.player,
             ...(saved.player ?? {}),
@@ -238,6 +249,7 @@ export function GameStateProvider({ children }: GameStateProviderProps) {
         ...INITIAL_GAME_STATE,
         ...savedGlobal,
         currentScene: 'LANDING' as const,
+        userRole: savedGlobal.userRole ?? 'student',
         player: {
           ...INITIAL_GAME_STATE.player,
           ...(savedGlobal.player ?? {}),
@@ -256,10 +268,13 @@ export function GameStateProvider({ children }: GameStateProviderProps) {
     return INITIAL_GAME_STATE;
   });
 
-  // Persist state to localStorage on every change
+  // Persist state to localStorage on every change & sync student state
   useEffect(() => {
     if (state.currentUserEmail) {
       saveUserGameState(state.currentUserEmail, state);
+      if (state.userRole === 'student') {
+        syncStudentStateToRoster(state);
+      }
     } else {
       saveGameState(state);
     }

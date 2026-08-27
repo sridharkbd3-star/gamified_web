@@ -14,8 +14,10 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, SkipForward } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { TypewriterText } from './TypewriterText';
 import type { DialogueLine } from '../../types';
+import { getLocalizedDialogueLine } from '../../data/dialogue';
 
 interface CinematicDialoguePanelProps {
   line: DialogueLine;
@@ -26,12 +28,15 @@ interface CinematicDialoguePanelProps {
 }
 
 export const CinematicDialoguePanel: React.FC<CinematicDialoguePanelProps> = ({
-  line,
+  line: rawLine,
   isVisible,
   onAdvance,
   lineIndex,
   totalLines,
 }) => {
+  const { t } = useTranslation();
+  const line = getLocalizedDialogueLine(rawLine, t);
+
   const [isTextComplete, setIsTextComplete] = useState(false);
   const [key, setKey] = useState(0); // force re-mount on line change
 
@@ -234,12 +239,12 @@ export const CinematicDialoguePanel: React.FC<CinematicDialoguePanelProps> = ({
                 >
                   {isTextComplete ? (
                     <>
-                      Continue
+                      {t('actions.continue', 'Continue')}
                       <ChevronRight size={13} />
                     </>
                   ) : (
                     <>
-                      Skip
+                      {t('actions.skip', 'Skip')}
                       <SkipForward size={12} />
                     </>
                   )}

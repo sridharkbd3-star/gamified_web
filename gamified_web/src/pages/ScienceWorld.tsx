@@ -17,7 +17,13 @@ import {
 } from 'lucide-react';
 import { useGameState } from '../context/GameStateContext';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
+import { LanguageSelectionModal } from '../components/ui/LanguageSelectionModal';
 import { DemoModeOverlay } from '../components/demo/DemoModeOverlay';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedLevel } from '../utils/levelUtils';
+import { MissionCharacterDisplay } from '../components/ui/MissionCharacterDisplay';
+import { ShieldAIChatbot } from '../components/ui/ShieldAIChatbot';
+import { getConceptExplanation } from '../utils/conceptExplanations';
 
 // ── ENVIRONMENT PER STAGE ─────────────────────────────────
 import { SCIENCE_LEVELS, getLevelsByStage } from '../data/scienceLevels';
@@ -138,6 +144,7 @@ const getSimplifiedLevelTexts = (level: SciLevel) => {
 
 export const ScienceWorld: React.FC = () => {
   const { state, dispatch, navigateTo } = useGameState();
+  const { t } = useTranslation();
 
   const handleReturnToHub = () => {
     dispatch({ type: 'EXIT_DOMAIN' });
@@ -147,9 +154,11 @@ export const ScienceWorld: React.FC = () => {
   const [viewMode, setViewMode] = useState<'domain-map' | 'stage-levels' | 'gameplay'>('domain-map');
   const [selectedStageNum, setSelectedStageNum] = useState<number>(1);
   const [activeLevel, setActiveLevel] = useState<SciLevel | null>(null);
+  const currentLevel = activeLevel ? getLocalizedLevel(activeLevel, t) : null;
   const [missionStarted, setMissionStarted] = useState(false);
   const [muted, setMuted] = useState(() => audioSynth.getMuted());
   const [showDemoOverlay, setShowDemoOverlay] = useState(false);
+  const [showLangModal, setShowLangModal] = useState(false);
 
   const handleToggleMute = () => {
     const isNowMuted = audioSynth.toggleMute();
@@ -464,9 +473,9 @@ export const ScienceWorld: React.FC = () => {
               <div className="w-full lg:w-5/12 flex flex-col justify-between p-6 rounded-2xl border border-cyan-500/10 bg-[#080812]/80 backdrop-blur-md shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
                 <div>
-                  <span className="font-display text-xs tracking-widest text-[#00e5ff] uppercase block mb-1">Central Relic</span>
-                  <h2 className="font-display text-xl tracking-wider text-slate-100 uppercase">The Luminal Stone</h2>
-                  <p className="text-sm text-slate-400 mt-2 leading-relaxed">Master observation, forces, energy, life science, and scientific method. Complete all 4 Stage Bosses to unlock the Science Stone!</p>
+                  <span className="font-display text-xs tracking-widest text-[#00e5ff] uppercase block mb-1">{t('stageMap.centralRelic', 'Central Relic')}</span>
+                  <h2 className="font-display text-xl tracking-wider text-slate-100 uppercase">{t('stones.scienceStone', 'The Luminal Stone')}</h2>
+                  <p className="text-sm text-slate-400 mt-2 leading-relaxed">{t('stageMap.sciDesc', 'Master observation, forces, energy, life science, and scientific method. Complete all 4 Stage Bosses to unlock the Science Stone!')}</p>
                 </div>
                 <div className="my-8 flex justify-center items-center relative py-6">
                   <motion.div animate={{ rotate: 360 }} transition={{ duration: 25, repeat: Infinity, ease: 'linear' }} className="absolute w-44 h-44 rounded-full border border-cyan-500/15 border-dashed" />
@@ -491,36 +500,36 @@ export const ScienceWorld: React.FC = () => {
                   </div>
                 </div>
                 <div className="border-t border-slate-800/40 pt-4 flex justify-between items-center text-sm text-slate-500">
-                  <span>Fragments Acquired:</span>
-                  <span className="font-display text-[#00e5ff] font-bold">{[1,2,3,4].filter(n => isStageCompleted(n)).length} / 4 SECURED</span>
+                  <span>{t('stageMap.fragmentsAcquired', 'Fragments Acquired')}:</span>
+                  <span className="font-display text-[#00e5ff] font-bold">{[1,2,3,4].filter(n => isStageCompleted(n)).length} / 4 {t('stageMap.secured', 'SECURED')}</span>
                 </div>
               </div>
 
               {/* Stages */}
               <div className="w-full lg:w-7/12 flex flex-col gap-4">
                 {[
-                  { num: 1, title: 'STAGE 1 — DISCOVER', desc: 'Learn through observation, measurement, and experiments. Explore matter, light, sound, magnetism and forces.', locked: false },
-                  { num: 2, title: 'STAGE 2 — UNDERSTAND', desc: 'Dive deeper into motion, force, energy, electricity, circuits, chemical changes, and density.', locked: !isStageUnlocked(2) },
-                  { num: 3, title: 'STAGE 3 — LIFE & EARTH', desc: 'Explore cells, the human body, plants, food chains, ecosystems, the water cycle, and environmental science.', locked: !isStageUnlocked(3) },
-                  { num: 4, title: 'STAGE 4 — MASTERY', desc: 'Master the scientific method, design experiments, analyze data, and solve complex integrated science challenges.', locked: !isStageUnlocked(4) }
+                  { num: 1, title: `${t('stageMap.stage', 'STAGE')} 1 — ${t('stageMap.discover', 'DISCOVER')}`, desc: t('stageMap.sciDesc1', 'Learn through observation, measurement, and experiments. Explore matter, light, sound, magnetism and forces.'), locked: false },
+                  { num: 2, title: `${t('stageMap.stage', 'STAGE')} 2 — ${t('stageMap.understand', 'UNDERSTAND')}`, desc: t('stageMap.sciDesc2', 'Dive deeper into motion, force, energy, electricity, circuits, chemical changes, and density.'), locked: !isStageUnlocked(2) },
+                  { num: 3, title: `${t('stageMap.stage', 'STAGE')} 3 — ${t('stageMap.lifeEarth', 'LIFE & EARTH')}`, desc: t('stageMap.sciDesc3', 'Explore cells, the human body, plants, food chains, ecosystems, the water cycle, and environmental science.'), locked: !isStageUnlocked(3) },
+                  { num: 4, title: `${t('stageMap.stage', 'STAGE')} 4 — ${t('stageMap.mastery', 'MASTERY')}`, desc: t('stageMap.sciDesc4', 'Master the scientific method, design experiments, analyze data, and solve complex integrated science challenges.'), locked: !isStageUnlocked(4) }
                 ].map(st => {
                   const completed = isStageCompleted(st.num);
                   return (
                     <div key={st.num} className={`p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${completed ? 'border-cyan-500/20 bg-cyan-500/5' : st.locked ? 'border-slate-800 bg-[#040409]/40 opacity-55' : 'border-cyan-500/20 bg-[#080812]/80 hover:border-cyan-500/40 hover:bg-[#0c0c1b]/80'}`}>
                       <div className="max-w-[420px]">
                         <div className="flex items-center gap-2">
-                          <span className="font-display text-xs tracking-wider font-semibold text-[#00e5ff] uppercase">STAGE {st.num}</span>
-                          {completed && <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-display text-xs font-bold tracking-widest uppercase">✓ Completed</span>}
+                          <span className="font-display text-xs tracking-wider font-semibold text-[#00e5ff] uppercase">{t('stageMap.stage', 'STAGE')} {st.num}</span>
+                          {completed && <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-display text-xs font-bold tracking-widest uppercase">✓ {t('stageMap.completed', 'Completed')}</span>}
                         </div>
                         <h3 className="font-display text-base tracking-wider text-slate-100 uppercase mt-0.5">{st.title}</h3>
                         <p className="text-sm text-slate-400 mt-1 leading-relaxed">{st.desc}</p>
                       </div>
                       <div className="flex sm:flex-col items-end gap-2 justify-between shrink-0">
                         {st.locked ? (
-                          <div className="flex items-center gap-1.5 text-slate-500 font-display text-xs tracking-widest uppercase"><Lock size={14} /> LOCKED</div>
+                          <div className="flex items-center gap-1.5 text-slate-500 font-display text-xs tracking-widest uppercase"><Lock size={14} /> {t('stageMap.locked', 'LOCKED')}</div>
                         ) : (
                           <button onClick={() => handleEnterStage(st.num)} className="px-5 py-2.5 rounded-xl border border-cyan-500 bg-[#00e5ff]/10 text-[#00e5ff] font-display text-xs font-bold tracking-widest uppercase hover:bg-[#00e5ff]/20 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,229,255,0.1)]">
-                            Enter Stage
+                            {t('stageMap.enterStage', 'ENTER STAGE')}
                           </button>
                         )}
                       </div>
@@ -536,14 +545,15 @@ export const ScienceWorld: React.FC = () => {
             <motion.div key="stage-levels" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               className="w-full max-w-4xl py-4 flex flex-col items-center">
               <div className="text-center mb-8 max-w-xl">
-                <span className="font-display text-xs tracking-widest text-[#00e5ff] uppercase block mb-1">STAGE {selectedStageNum}</span>
+                <span className="font-display text-xs tracking-widest text-[#00e5ff] uppercase block mb-1">{t('stageMap.stage', 'STAGE')} {selectedStageNum}</span>
                 <h1 className="font-display text-3xl tracking-wider text-white uppercase">
-                  {selectedStageNum === 1 && 'Discover'}{selectedStageNum === 2 && 'Understand'}{selectedStageNum === 3 && 'Life & Earth'}{selectedStageNum === 4 && 'Mastery'}
+                  {selectedStageNum === 1 && t('stageMap.discover', 'DISCOVER')}{selectedStageNum === 2 && t('stageMap.understand', 'UNDERSTAND')}{selectedStageNum === 3 && t('stageMap.lifeEarth', 'LIFE & EARTH')}{selectedStageNum === 4 && t('stageMap.mastery', 'MASTERY')}
                 </h1>
-                <p className="text-sm text-slate-400 mt-2">Complete each mission in order. Boss unlocks after all 9 missions!</p>
+                <p className="text-sm text-slate-400 mt-2">{t('stageMap.completeMissionsPrompt', 'Complete each mission in order. Boss unlocks after all 9 missions!')}</p>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 w-full mb-10">
-                {getLevelsByStage(selectedStageNum).map(level => {
+                {getLevelsByStage(selectedStageNum).map(rawLevel => {
+                  const level = getLocalizedLevel(rawLevel, t);
                   const completed = state.completedStageIds.includes(level.id);
                   const unlocked = isLevelUnlocked(level);
                   const isActive = unlocked && !completed;
@@ -563,8 +573,8 @@ export const ScienceWorld: React.FC = () => {
                 })}
               </div>
               <div className="w-full p-4 rounded-xl border border-slate-800 bg-[#06060c]/80 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <span className="text-slate-400 text-sm">{isStageCompleted(selectedStageNum) ? '✓ Stage complete — Fragment secured!' : 'Complete all missions to unlock the Stage Boss.'}</span>
-                <button onClick={() => setViewMode('domain-map')} className="px-5 py-2.5 rounded-xl border border-slate-800 text-slate-300 font-display text-xs tracking-widest uppercase hover:bg-white/5 transition-all cursor-pointer">Back to Stages</button>
+                <span className="text-slate-400 text-sm">{isStageCompleted(selectedStageNum) ? t('stageMap.stageCompleteFragment', '✓ Stage complete — Fragment secured!') : t('stageMap.completeMissionsForBoss', 'Complete all missions to unlock the Stage Boss.')}</span>
+                <button onClick={() => setViewMode('domain-map')} className="px-5 py-2.5 rounded-xl border border-slate-800 text-slate-300 font-display text-xs tracking-widest uppercase hover:bg-white/5 transition-all cursor-pointer">{t('stageMap.backToStages', 'Back to Stages')}</button>
               </div>
             </motion.div>
           )}
@@ -573,7 +583,7 @@ export const ScienceWorld: React.FC = () => {
           {viewMode === 'gameplay' && activeLevel && (
             <motion.div key="gameplay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50">
               {(() => {
-                const texts = getSimplifiedLevelTexts(activeLevel);
+                const texts = getSimplifiedLevelTexts(currentLevel || activeLevel);
                 const env = getMissionEnvironment(activeLevel);
                 const stageLevels = SCIENCE_LEVELS.filter(l => l.stage === activeLevel.stage);
                 const currentHP = attempts <= 1 ? 3 : attempts === 2 ? 2 : 1;
@@ -606,14 +616,13 @@ export const ScienceWorld: React.FC = () => {
                             <span className="text-xs text-[#00e5ff] font-display tracking-widest uppercase font-bold">LAB COMMS — ACTIVE</span>
                           </div>
                           <div className="flex-1 flex flex-col justify-center gap-6">
-                            <div className="relative rounded-2xl overflow-hidden border-2 shadow-2xl" style={{ borderColor: `${env.themeColor}40`, boxShadow: `0 0 40px ${env.themeColor}15` }}>
-                              <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: 'linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.15) 50%)', backgroundSize: '100% 4px' }} />
-                              <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/70 px-3 py-1 rounded-lg">
-                                <span className="w-2 h-2 rounded-full bg-[#00e5ff] animate-ping" />
-                                <span className="text-xs text-[#00e5ff] font-mono font-bold">MORALES · ONLINE</span>
-                              </div>
-                              <img src="/miles-character.jpg" alt="Agent Morales" className="w-full object-cover" style={{ maxHeight: '280px' }} />
-                            </div>
+                            <MissionCharacterDisplay
+                              src="/miles-character.jpg"
+                              alt="Agent Morales"
+                              themeColor={env.themeColor}
+                              variant="briefing"
+                              onlineLabel="MORALES · ONLINE"
+                            />
                             <div className="relative p-5 rounded-2xl border bg-black/40 backdrop-blur-sm" style={{ borderColor: `${env.themeColor}20` }}>
                               <div className="absolute -top-2.5 left-6 w-5 h-5 rotate-45 bg-[#030306] border-l border-t" style={{ borderColor: `${env.themeColor}20` }} />
                               <p className="text-base text-slate-200 leading-relaxed">{texts.briefingStory}</p>
@@ -722,16 +731,13 @@ export const ScienceWorld: React.FC = () => {
 
                       {/* LEFT - Character */}
                       <div className="lg:col-span-3 border-r border-white/5 bg-black/30 backdrop-blur-sm flex flex-col p-5 gap-5 overflow-y-auto">
-                        <div className="relative rounded-2xl overflow-hidden border-2 shadow-xl" style={{ borderColor: `${env.themeColor}35`, boxShadow: `0 0 25px ${env.themeColor}12` }}>
-                          <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/80 px-2.5 py-1 rounded-lg">
-                            <span className="w-2 h-2 rounded-full bg-[#00e5ff] animate-ping" />
-                            <span className="text-xs text-[#00e5ff] font-mono font-bold">ACTIVE</span>
-                          </div>
-                          <img src={showHint ? '/future-self.jpg' : '/miles-character.jpg'} alt="Agent Morales" className="w-full object-cover transition-all duration-500" style={{ maxHeight: '200px' }} />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                            <p className="text-xs font-display text-white font-bold tracking-wider uppercase">{showHint ? '🔮 FUTURE MORALES' : '🔬 AGENT MORALES'}</p>
-                          </div>
-                        </div>
+                        <MissionCharacterDisplay
+                          src={showHint ? '/future-self.jpg' : '/miles-character.jpg'}
+                          alt="Agent Morales"
+                          themeColor={env.themeColor}
+                          variant="gameplay"
+                          onlineLabel={showHint ? 'FUTURE MORALES · COMMS' : 'MORALES · ONLINE'}
+                        />
                         <div className="flex items-center gap-0.5 justify-center h-6 px-2">
                           {[...Array(14)].map((_, i) => (
                             <div key={i} className="flex-1 rounded-full transition-all"
@@ -745,9 +751,11 @@ export const ScienceWorld: React.FC = () => {
                               {showFeedback ? (isCorrect ? `"${texts.successDialogue}"` : `"${texts.feedbackIncorrect}"`) : showHint ? `"${texts.hintDialogue}"` : `"${texts.characterDialogue}"`}
                             </p>
                           </div>
-                          <div className="p-3 rounded-xl border border-white/5 bg-white/3">
-                            <p className="text-xs text-slate-500 tracking-widest uppercase font-display mb-1">Concept</p>
-                            <p className="text-sm text-slate-300 font-semibold">{activeLevel.primaryConcept}</p>
+                          <div className="p-3.5 rounded-xl border border-white/10 bg-black/40">
+                            <p className="text-[10px] text-cyan-400 tracking-widest uppercase font-display mb-1 font-bold">💡 CONCEPT: {activeLevel.primaryConcept}</p>
+                            <p className="text-xs text-slate-300 leading-relaxed font-body">
+                              {getConceptExplanation(activeLevel.primaryConcept, activeLevel.levelNumber)}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -1034,72 +1042,98 @@ export const ScienceWorld: React.FC = () => {
                         )}
                       </div>
 
-                      {/* RIGHT - Objectives, Hint, Submit */}
-                      <div className="lg:col-span-3 border-l border-white/5 bg-black/30 backdrop-blur-sm flex flex-col p-5 gap-5 overflow-y-auto">
-                        <div className="p-4 rounded-xl border border-white/5 bg-white/3">
-                          <span className="font-display text-xs tracking-widest text-slate-500 uppercase block mb-2 font-bold">🎯 Mission Goal</span>
-                          <p className="text-sm text-slate-200 font-semibold leading-relaxed">{texts.objective}</p>
+                      {/* RIGHT - Mission Goal, Chatbot, Hint, Check Answer */}
+                      <div className="lg:col-span-3 border-l border-white/5 bg-black/30 backdrop-blur-sm flex flex-col p-4 gap-4 overflow-y-auto">
+                        {/* 1. MISSION GOAL */}
+                        <div className="p-3.5 rounded-xl border border-white/10 bg-black/40 shadow-sm shrink-0">
+                          <span className="font-display text-[11px] tracking-widest text-slate-400 uppercase block mb-1 font-bold">🎯 Mission Goal</span>
+                          <p className="text-xs text-slate-100 font-semibold leading-relaxed">{texts.objective}</p>
                         </div>
-                        <div>
-                          <p className="font-display text-xs tracking-widest text-slate-500 uppercase font-bold mb-3">📍 Stage Progress</p>
-                          <div className="flex flex-col gap-1.5">
-                            {stageLevels.map(l => {
-                              const isCurrent = l.id === activeLevel.id;
-                              const isDone = state.completedStageIds.includes(l.id);
-                              return (
-                                <div key={l.id} className="flex items-center gap-2">
-                                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold font-display shrink-0"
-                                    style={{ background: isCurrent ? env.themeColor : isDone ? `${env.themeColor}30` : '#1a1a2e', color: isCurrent ? '#000' : isDone ? env.themeColor : '#4a4a6a', border: `1px solid ${isCurrent ? env.themeColor : isDone ? `${env.themeColor}50` : '#2a2a3e'}` }}>
-                                    {isDone ? '✓' : l.levelNumber === 10 ? '★' : l.levelNumber}
-                                  </div>
-                                  <span className={`text-xs leading-tight ${isCurrent ? 'text-white font-semibold' : isDone ? 'text-slate-500' : 'text-slate-700'}`}>
-                                    {l.levelNumber === 10 ? 'Boss' : `Mission ${l.levelNumber}`}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
+
+                        {/* 2. SHIELD AI ASSISTANT */}
+                        <div className="flex-1 min-h-[220px]">
+                          <ShieldAIChatbot
+                            domainId="science"
+                            domainName="Science"
+                            themeColor={env.themeColor}
+                            stage={activeLevel.stage}
+                            missionNumber={activeLevel.levelNumber}
+                            missionTitle={texts.briefingTitle}
+                            primaryConcept={activeLevel.primaryConcept}
+                            objective={texts.objective}
+                            questionText={texts.story || texts.questionLabel}
+                            submittedAnswer={selectedOption || inputValue || null}
+                            isCorrect={showFeedback ? isCorrect : null}
+                            onTriggerHint={() => setShowHint(true)}
+                            variant="desktop"
+                          />
                         </div>
-                        <div className="border-t border-white/5 pt-4">
-                          <button onClick={() => { setShowHint(!showHint); if (!showHint) setHintsUsed(h => h + 1); }}
-                            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 bg-black/40 hover:bg-black/60 text-sm font-display uppercase tracking-wider cursor-pointer transition-all font-bold"
-                            style={{ borderColor: showHint ? '#fbbf24' : '#1e1e2e', color: showHint ? '#fbbf24' : '#64748b' }}>
-                            <span className="flex items-center gap-2"><Lightbulb size={16} className={showHint ? 'text-amber-400' : 'text-slate-500'} />{showHint ? 'Hide Hint' : 'Need a Hint?'}</span>
-                            <span>{showHint ? '▲' : '▼'}</span>
+
+                        {/* 3. NEED A HINT? SECTION */}
+                        <div className="border-t border-white/10 pt-3 shrink-0">
+                          <button 
+                            onClick={() => { setShowHint(!showHint); if (!showHint) setHintsUsed(h => h + 1); }}
+                            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border bg-black/40 hover:bg-black/60 text-xs font-display uppercase tracking-wider cursor-pointer transition-all font-bold"
+                            style={{ borderColor: showHint ? '#fbbf24' : 'rgba(255,255,255,0.1)', color: showHint ? '#fbbf24' : '#94a3b8' }}
+                          >
+                            <span className="flex items-center gap-2">
+                              <Lightbulb size={15} className={showHint ? 'text-amber-400' : 'text-slate-400'} />
+                              {showHint ? 'Hide Hint' : 'Need a Hint?'}
+                            </span>
+                            <span className="text-xs">{showHint ? '▲' : '▼'}</span>
                           </button>
                           <AnimatePresence>
                             {showHint && (
-                              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                className="text-sm text-amber-100/80 p-4 rounded-xl bg-amber-950/20 border border-amber-500/20 leading-relaxed mt-2">
+                              <motion.div 
+                                initial={{ opacity: 0, height: 0 }} 
+                                animate={{ opacity: 1, height: 'auto' }} 
+                                exit={{ opacity: 0, height: 0 }}
+                                className="text-xs text-amber-100/90 p-3 rounded-xl bg-amber-950/30 border border-amber-500/30 leading-relaxed mt-2 shadow-inner"
+                              >
                                 💡 {texts.hintText}
                               </motion.div>
                             )}
                           </AnimatePresence>
                         </div>
-                        <div className="mt-auto border-t border-white/5 pt-4 flex flex-col gap-3">
+
+                        {/* 4. CHECK MY ANSWER BUTTON */}
+                        <div className="mt-auto border-t border-white/10 pt-3 flex flex-col gap-2.5 shrink-0">
                           <AnimatePresence>
                             {showFeedback && (
-                              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                                className="p-4 rounded-xl border text-sm flex items-start gap-3 leading-relaxed"
-                                style={{ background: isCorrect ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', borderColor: isCorrect ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)', color: isCorrect ? '#34d399' : '#f87171' }}>
-                                <span className="text-xl shrink-0">{isCorrect ? '✅' : '❌'}</span>
+                              <motion.div 
+                                initial={{ opacity: 0, y: 8 }} 
+                                animate={{ opacity: 1, y: 0 }} 
+                                exit={{ opacity: 0, y: -8 }}
+                                className="p-3 rounded-xl border text-xs flex items-start gap-2.5 leading-relaxed"
+                                style={{ background: isCorrect ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', borderColor: isCorrect ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)', color: isCorrect ? '#34d399' : '#f87171' }}
+                              >
+                                <span className="text-lg shrink-0">{isCorrect ? '✅' : '❌'}</span>
                                 <div>
-                                  <span className="font-display text-xs uppercase tracking-wider font-bold block mb-1">{isCorrect ? 'CORRECT!' : 'TRY AGAIN'}</span>
+                                  <span className="font-display text-xs uppercase tracking-wider font-bold block mb-0.5">{isCorrect ? 'CORRECT!' : 'TRY AGAIN'}</span>
                                   <p className="text-slate-300 text-xs leading-relaxed">{feedbackText}</p>
                                 </div>
                               </motion.div>
                             )}
                           </AnimatePresence>
+
                           {showFeedback && isCorrect ? (
-                            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleContinueNext}
-                              className="w-full py-4 rounded-xl border-2 font-display text-base font-extrabold tracking-widest uppercase cursor-pointer transition-all"
-                              style={{ borderColor: '#10b981', background: 'rgba(16,185,129,0.15)', color: '#34d399', boxShadow: '0 0 20px rgba(16,185,129,0.2)' }}>
+                            <motion.button 
+                              whileHover={{ scale: 1.02 }} 
+                              whileTap={{ scale: 0.98 }} 
+                              onClick={handleContinueNext}
+                              className="w-full py-3.5 rounded-xl border-2 font-display text-sm font-extrabold tracking-widest uppercase cursor-pointer transition-all shadow-md"
+                              style={{ borderColor: '#10b981', background: 'rgba(16,185,129,0.15)', color: '#34d399', boxShadow: '0 0 20px rgba(16,185,129,0.2)' }}
+                            >
                               ▶ NEXT MISSION
                             </motion.button>
                           ) : (
-                            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={activeLevel.isBoss ? handleVerifyBossPhase : handleVerifyAnswer}
-                              className="w-full py-4 rounded-xl border-2 font-display text-base font-extrabold tracking-widest uppercase cursor-pointer transition-all"
-                              style={{ borderColor: env.themeColor, background: `${env.themeColor}15`, color: env.themeColor, boxShadow: `0 0 15px ${env.themeColor}20` }}>
+                            <motion.button 
+                              whileHover={{ scale: 1.02 }} 
+                              whileTap={{ scale: 0.98 }} 
+                              onClick={activeLevel.isBoss ? handleVerifyBossPhase : handleVerifyAnswer}
+                              className="w-full py-3.5 rounded-xl border-2 font-display text-sm font-extrabold tracking-widest uppercase cursor-pointer transition-all shadow-md"
+                              style={{ borderColor: env.themeColor, background: `${env.themeColor}15`, color: env.themeColor, boxShadow: `0 0 15px ${env.themeColor}20` }}
+                            >
                               ✓ CHECK MY ANSWER
                             </motion.button>
                           )}
@@ -1222,6 +1256,7 @@ export const ScienceWorld: React.FC = () => {
       </footer>
 
       {showDemoOverlay && <DemoModeOverlay onClose={() => setShowDemoOverlay(false)} />}
+      {showLangModal && <LanguageSelectionModal isOpen={showLangModal} onClose={() => setShowLangModal(false)} />}
     </div>
   );
 };

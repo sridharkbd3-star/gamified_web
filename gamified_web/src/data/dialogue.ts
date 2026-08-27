@@ -379,3 +379,25 @@ export const FOURTH_STONE_HOOK_DIALOGUE: DialogueLine[] = [
     emotion: 'urgent',
   },
 ];
+
+export function getLocalizedDialogueLine(line: DialogueLine, t: (key: string, options?: any) => string): DialogueLine {
+  if (!line) return line;
+
+  const localizedSpeaker = t(`story.${line.speakerId === 'young-man' ? 'youngMan' : line.speakerId === 'future-self' ? 'futureSelf' : line.speakerId}`, {
+    defaultValue: line.speakerName,
+  });
+
+  const localizedText = t(`dialogue.${line.id}`, { defaultValue: line.text });
+
+  return {
+    ...line,
+    speakerName: localizedSpeaker,
+    text: localizedText,
+  };
+}
+
+export function getLocalizedDialogueList(lines: DialogueLine[], t: (key: string, options?: any) => string): DialogueLine[] {
+  if (!Array.isArray(lines)) return lines;
+  return lines.map((l) => getLocalizedDialogueLine(l, t));
+}
+

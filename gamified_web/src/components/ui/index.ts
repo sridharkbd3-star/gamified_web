@@ -18,3 +18,5 @@ export { Modal }                from './Modal';
 export { SceneTransition }      from './SceneTransition';
 export { Toast }                from './Toast';
 export { LanguageSelector }     from './LanguageSelector';
+export { SpatialHUDHeader }     from './SpatialHUDHeader';
+export { MissionCharacterDisplay } from './MissionCharacterDisplay';

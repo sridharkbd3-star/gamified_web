@@ -86,8 +86,8 @@
   --space-24: 96px;
 
   /* Typography */
-  --font-display: 'Orbitron', 'Exo 2', monospace;
-  --font-body:    'Inter', system-ui, sans-serif;
+  --font-display: 'Orbitron', 'Noto Sans Tamil', 'Noto Sans Devanagari', 'Noto Sans Malayalam', 'Exo 2', monospace, sans-serif;
+  --font-body:    'Inter', 'Noto Sans Tamil', 'Noto Sans Devanagari', 'Noto Sans Malayalam', system-ui, sans-serif;
 
   /* Font Sizes */
   --text-xs:   0.75rem;   /* 12px — labels, status */
@@ -352,5 +352,54 @@ body {
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: rgba(0, 180, 255, 0.45);
+}
+
+/* ----------------------------------------------------------
+   SPATIAL UI DESIGN SYSTEM UTILITIES
+   ---------------------------------------------------------- */
+.spatial-grid-bg {
+  background-image: 
+    linear-gradient(rgba(0, 180, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 180, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.spatial-panel {
+  position: relative;
+  background: rgba(9, 12, 34, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 180, 255, 0.25);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spatial-panel:hover {
+  border-color: rgba(0, 180, 255, 0.45);
+  box-shadow: 0 16px 50px rgba(0, 180, 255, 0.15), inset 0 1px 4px rgba(255, 255, 255, 0.15);
+}
+
+/* Domain Specific Glow Accents */
+.glow-science     { box-shadow: 0 0 25px rgba(0, 229, 255, 0.25), inset 0 0 15px rgba(0, 229, 255, 0.1); }
+.glow-tech        { box-shadow: 0 0 25px rgba(123, 47, 255, 0.25), inset 0 0 15px rgba(123, 47, 255, 0.1); }
+.glow-engineering { box-shadow: 0 0 25px rgba(255, 149, 0, 0.25), inset 0 0 15px rgba(255, 149, 0, 0.1); }
+.glow-math        { box-shadow: 0 0 25px rgba(0, 255, 136, 0.25), inset 0 0 15px rgba(0, 255, 136, 0.1); }
+
+/* Scanline Sweep animation */
+@keyframes scanlineSweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.scanline-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.6), transparent);
+  animation: scanlineSweep 8s linear infinite;
+  pointer-events: none;
 }
 

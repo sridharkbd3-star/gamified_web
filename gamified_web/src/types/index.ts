@@ -11,9 +11,12 @@
 // as each phase is built.
 // ----------------------------------------------------------
 export type SceneName =
+  | 'LANGUAGE_SELECTION' // Language Choice before Login
   | 'LANDING'           // S.H.I.E.L.D. Landing page
   | 'SIGN_IN'           // Sign In page
+  | 'TEACHER_SIGN_IN'   // Teacher Sign In page
   | 'SIGN_UP'           // Sign Up page
+  | 'TEACHER_DASHBOARD' // Teacher Command Center Dashboard
   | 'FOUNDATION'        // Phase 1 only — remove in final build
   | 'INTRO'             // Phase 2 — young man wakes up
   | 'TIME_PORTAL'       // Phase 3 — portal appears
@@ -33,6 +36,45 @@ export type SceneName =
   | 'FINAL_PATH'        // Phase 6 — four stones gathered
   | 'HERO_TRANSFORMATION' // Phase 6 — hero suit
   | 'ENDING';           // Phase 6 — finale
+
+// ----------------------------------------------------------
+// ROLES & DOUBTS
+// ----------------------------------------------------------
+export type UserRole = 'student' | 'teacher';
+
+export interface DoubtItem {
+  id: string;
+  studentId: string;
+  studentName: string;
+  studentEmail: string;
+  domainId: DomainId;
+  domainName: string;
+  stageTitle?: string;
+  stageId?: string;
+  question: string;
+  answer?: string;
+  answeredAt?: string;
+  teacherName?: string;
+  status: 'NEW' | 'WAITING' | 'ANSWERED';
+  createdAt: string;
+}
+
+export interface StudentRecord {
+  id: string;
+  name: string;
+  email: string;
+  role: 'student';
+  overallProgress: number; // 0–100
+  domainProgress: Record<DomainId, number>;
+  currentStage: string;
+  completedMissionsCount: number;
+  xp: number;
+  level: number;
+  collectedStones: StoneId[];
+  status: 'ACTIVE' | 'COMPLETED' | 'NEEDS_SUPPORT';
+  recentActivity: string;
+  doubts: DoubtItem[];
+}
 
 // ----------------------------------------------------------
 // STEM DOMAINS
@@ -172,8 +214,9 @@ export interface GameState {
   /** Internal version — bump when state schema changes */
   _version: number;
   
-  // Auth state
+  // Auth & Role state
   currentUserEmail: string | null;
+  userRole: UserRole;
   hasSeenIntroStory: boolean;
 }
 
@@ -196,7 +239,7 @@ export type GameAction =
   | { type: 'RECORD_STAGE_PERFORMANCE'; stageId: string; performance: StagePerformance }
   | { type: 'MARK_DOMAIN_VISITED'; domainId: DomainId }
   | { type: 'SET_STORY_RECALL_MODE'; active: boolean }
-  | { type: 'LOGIN_USER'; email: string; progressState: GameState | null }
+  | { type: 'LOGIN_USER'; email: string; role?: UserRole; progressState: GameState | null }
   | { type: 'LOGOUT_USER' }
   | { type: 'MARK_STORY_SEEN' }
   | { type: 'RESET_GAME' }

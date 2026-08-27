@@ -27,6 +27,8 @@ interface FuturisticBackgroundProps {
   className?: string;
   /** Intensity of the atmospheric glow: low | medium | high */
   intensity?: 'low' | 'medium' | 'high';
+  /** Optional domain-specific spatial atmosphere variant */
+  variant?: 'default' | 'science' | 'technology' | 'engineering' | 'mathematics';
 }
 
 const PARTICLE_COUNT = 35;
@@ -48,9 +50,18 @@ function generateParticles(): Particle[] {
 export const FuturisticBackground: React.FC<FuturisticBackgroundProps> = ({
   className = '',
   intensity = 'medium',
+  variant = 'default',
 }) => {
   const prefersReduced = useReducedMotion();
   const particles = useMemo(() => generateParticles(), []);
+
+  const variantGlowColors = {
+    default: { primary: 'rgba(0,180,255,0.18)', secondary: 'rgba(123,47,255,0.15)' },
+    science: { primary: 'rgba(0,229,255,0.22)', secondary: 'rgba(0,140,255,0.18)' },
+    technology: { primary: 'rgba(123,47,255,0.22)', secondary: 'rgba(0,229,255,0.18)' },
+    engineering: { primary: 'rgba(255,149,0,0.22)', secondary: 'rgba(245,158,11,0.18)' },
+    mathematics: { primary: 'rgba(0,255,136,0.22)', secondary: 'rgba(0,229,255,0.18)' },
+  }[variant];
 
   const glowStrength = {
     low: { primary: '300px', secondary: '250px', opacity: 0.06 },
@@ -72,7 +83,7 @@ export const FuturisticBackground: React.FC<FuturisticBackgroundProps> = ({
         }}
       />
 
-      {/* Primary atmospheric glow — top-left (cyan/blue) */}
+      {/* Primary atmospheric glow — top-left */}
       <div
         className="absolute"
         style={{
@@ -80,12 +91,12 @@ export const FuturisticBackground: React.FC<FuturisticBackgroundProps> = ({
           left: '-5%',
           width: glowStrength.primary,
           height: glowStrength.primary,
-          background: 'radial-gradient(circle, rgba(0,100,200,0.18) 0%, transparent 70%)',
+          background: `radial-gradient(circle, ${variantGlowColors.primary} 0%, transparent 70%)`,
           filter: 'blur(40px)',
         }}
       />
 
-      {/* Secondary atmospheric glow — bottom-right (purple) */}
+      {/* Secondary atmospheric glow — bottom-right */}
       <div
         className="absolute"
         style={{
@@ -93,7 +104,7 @@ export const FuturisticBackground: React.FC<FuturisticBackgroundProps> = ({
           right: '-5%',
           width: glowStrength.secondary,
           height: glowStrength.secondary,
-          background: 'radial-gradient(circle, rgba(80,0,160,0.15) 0%, transparent 70%)',
+          background: `radial-gradient(circle, ${variantGlowColors.secondary} 0%, transparent 70%)`,
           filter: 'blur(40px)',
         }}
       />

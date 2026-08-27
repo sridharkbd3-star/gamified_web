@@ -30,8 +30,10 @@ import { FutureSelfReveal } from './FutureSelfReveal';
 import { CharacterReveal } from './CharacterReveal';
 import { CinematicDialoguePanel } from './CinematicDialoguePanel';
 import { LanguageSelector } from '../ui/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 import { audioSynth } from '../../utils/audio';
 import type { DialogueLine } from '../../types';
+import { getLocalizedDialogueList } from '../../data/dialogue';
 
 interface FinalConclusionPhase1Props {
   onContinue: () => void;
@@ -147,6 +149,8 @@ type PhaseStep =
   | 'final-step-ready';
 
 export const FinalConclusionPhase1: React.FC<FinalConclusionPhase1Props> = ({ onContinue }) => {
+  const { t } = useTranslation();
+  const dialogues = getLocalizedDialogueList(PHASE1_DIALOGUES, t);
   const [muted, setMuted] = useState(() => audioSynth.getMuted());
   const [step, setStep] = useState<PhaseStep>('domains-reveal');
   const [revealedDomainsCount, setRevealedDomainsCount] = useState(0);
@@ -548,11 +552,11 @@ export const FinalConclusionPhase1: React.FC<FinalConclusionPhase1Props> = ({ on
             {step === 'dialogue' && (
               <div className="absolute bottom-6 left-0 right-0 z-40 px-4 max-w-4xl mx-auto">
                 <CinematicDialoguePanel
-                  line={PHASE1_DIALOGUES[dialogueIdx]}
+                  line={dialogues[dialogueIdx]}
                   isVisible={true}
                   onAdvance={handleAdvanceDialogue}
                   lineIndex={dialogueIdx}
-                  totalLines={PHASE1_DIALOGUES.length}
+                  totalLines={dialogues.length}
                 />
               </div>
             )}

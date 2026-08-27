@@ -2,7 +2,8 @@
   "app": {
     "name": "S.H.I.E.L.D.",
     "subtitle": "TESSERACT STEM HERO",
-    "motto": "KNOWLEDGE SHAPES THE FUTURE."
+    "motto": "KNOWLEDGE SHAPES THE FUTURE.",
+    "tagline": "A Journey Where Knowledge Shapes the Future"
   },
   "languages": {
     "selectLanguage": "SELECT LANGUAGE",
@@ -25,17 +26,154 @@
     "inventory": "Inventory",
     "settings": "Settings",
     "signOut": "Sign Out",
-    "back": "Back"
+    "back": "Back",
+    "mainStream": "Main Stream"
   },
   "domains": {
-    "science": "Science",
-    "technology": "Technology",
-    "engineering": "Engineering",
-    "mathematics": "Mathematics",
-    "scienceDesc": "Unlock the secrets of the natural universe.",
-    "technologyDesc": "Build the tools that shape the future.",
-    "engineeringDesc": "Design, build, and solve real-world problems.",
-    "mathematicsDesc": "Master the language of patterns and logic."
+    "science": {
+      "name": "Science",
+      "shortName": "SCI",
+      "desc": "Unlock the secrets of the natural universe.",
+      "longDesc": "Journey through biology, chemistry, and physics to understand the fundamental laws that govern all matter and energy. Every discovery brings you closer to mastering the world around you.",
+      "stages": {
+        "sci-01": {
+          "title": "First Discovery",
+          "desc": "Observe natural forces and identify hidden patterns in matter.",
+          "concept": "Matter & States",
+          "learningObjective": "Analyze molecular arrangements to identify energy states.",
+          "reward": "Observation Badge"
+        },
+        "sci-02": {
+          "title": "Scientific Variables",
+          "desc": "Manipulate Pressure, Catalyst ratio, and Heat to stabilize a compound.",
+          "concept": "Variables & Controls",
+          "learningObjective": "Understand variables, cause and effect, and controlled experimentation.",
+          "reward": "Variables Badge"
+        },
+        "sci-03": {
+          "title": "Mystery Experiment",
+          "desc": "Investigate pH and wavelength combinations to heal a crystal compound.",
+          "concept": "Mystery Investigation",
+          "learningObjective": "Observe results of mystery readings and form logical scientific conclusions.",
+          "reward": "Detective Orb"
+        },
+        "sci-04": {
+          "title": "Science Challenge",
+          "desc": "Synthesize all observations to manage a space colony fusion overload.",
+          "concept": "Universal Core",
+          "learningObjective": "Integrate variables, pressure controls, and light resonance in one reactor.",
+          "reward": "Science Stone Master"
+        }
+      }
+    },
+    "technology": {
+      "name": "Technology",
+      "shortName": "TECH",
+      "desc": "Build the tools that shape the future.",
+      "longDesc": "From logic gates to artificial intelligence, explore how technology amplifies human capability. Learn to code, design systems, and create digital solutions for real-world problems.",
+      "stages": {
+        "tech-01": {
+          "title": "Digital Spark",
+          "desc": "Understand basic binary logic and signal paths.",
+          "concept": "Binary Signals",
+          "learningObjective": "Trace voltage flows across simple logic gates.",
+          "reward": "Bit Emblem"
+        },
+        "tech-02": {
+          "title": "Sequence Mission",
+          "desc": "Program command steps to guide a drone through a wider coordinate path.",
+          "concept": "Longer Sequences",
+          "learningObjective": "Understand sequence ordering and direction logic on coordinates.",
+          "reward": "Logic Core"
+        },
+        "tech-03": {
+          "title": "Debug the System",
+          "desc": "Diagnose and repair a faulty code sequence to avoid drone crashes.",
+          "concept": "Code Debugging",
+          "learningObjective": "Identify bugs and construct corrections to solve broken operations.",
+          "reward": "Holo Key"
+        },
+        "tech-04": {
+          "title": "Code the Mission",
+          "desc": "Incorporate loops and repetition logic in a final navigation puzzle.",
+          "concept": "Loop Statements",
+          "learningObjective": "Write structured code using repetition algorithms and loop cycles.",
+          "reward": "Technology Stone Master"
+        }
+      }
+    },
+    "engineering": {
+      "name": "Engineering",
+      "shortName": "ENG",
+      "desc": "Design solutions that change the world.",
+      "longDesc": "Engineering bridges imagination and reality. Learn to design, prototype, and build structures, machines, and systems — turning abstract ideas into tangible creations.",
+      "stages": {
+        "eng-01": {
+          "title": "Build Your Idea",
+          "desc": "Design basic trusses and load-bearing links.",
+          "concept": "Cantilevers",
+          "learningObjective": "Identify load distributions on a cantilever model.",
+          "reward": "Link Pin"
+        },
+        "eng-02": {
+          "title": "Structure Challenge",
+          "desc": "Build a multi-span structural layout supporting heavy weight stress.",
+          "concept": "Multi-span Trusses",
+          "learningObjective": "Test material properties and torque equations on wider spans.",
+          "reward": "Steel Truss"
+        },
+        "eng-03": {
+          "title": "Test and Improve",
+          "desc": "Iterate and reinforce a failing bridge configuration to prevent collapse.",
+          "concept": "Iterative Reinforcement",
+          "learningObjective": "Analyze failures, isolate stress fractures, and modify structural anchors.",
+          "reward": "Bronze Pinion"
+        },
+        "eng-04": {
+          "title": "Engineering Mission",
+          "desc": "Design a space gantry launch tower that resists extreme wind shear.",
+          "concept": "Launch Towers",
+          "learningObjective": "Balance tension, loading support, and anchors within strict budgets.",
+          "reward": "Engineering Stone Master"
+        }
+      }
+    },
+    "mathematics": {
+      "name": "Mathematics",
+      "shortName": "MATH",
+      "desc": "Master the language of patterns and logic.",
+      "longDesc": "Mathematics is the universal language written into the fabric of reality. From algebra to calculus to cryptography, develop the ability to see patterns, reason precisely, and solve the impossible.",
+      "stages": {
+        "math-01": {
+          "title": "Pattern Awakening",
+          "desc": "Discover numerical sequences and fibonacci arcs.",
+          "concept": "Growth Ratios",
+          "learningObjective": "Identify ratio limits in geometric sequence growth lines.",
+          "reward": "Ratio Node"
+        },
+        "math-02": {
+          "title": "Pattern Explorer",
+          "desc": "Solve Fibonacci progression equations and visual geometric grids.",
+          "concept": "Golden Fibonacci",
+          "learningObjective": "Predict future indices in visual and golden ratio sequences.",
+          "reward": "Linear Slate"
+        },
+        "math-03": {
+          "title": "Logic Challenge",
+          "desc": "Solve balances of weights in a visual geometric scale equation.",
+          "concept": "Scale Balances",
+          "learningObjective": "Form algebraic variable equivalences to balance numeric scale ciphers.",
+          "reward": "Trig Prism"
+        },
+        "math-04": {
+          "title": "Mathematical Portal",
+          "desc": "Crack a dual-security cylinder lock combining arithmetic and geometric matrices.",
+          "concept": "Cylinder Lock Ciphers",
+          "learningObjective": "Solve multi-layer ciphers combining sequence sums and rate changes.",
+          "reward": "Mathematics Stone Master"
+        }
+      }
+    }
   },
   "actions": {
     "startLearning": "Start Learning",
@@ -47,7 +185,17 @@
     "enterStage": "Enter Stage",
     "needHint": "Need a Hint?",
     "hideHint": "Hide Hint",
-    "tryAgain": "TRY AGAIN"
+    "tryAgain": "TRY AGAIN",
+    "skip": "Skip",
+    "touchTesseract": "TOUCH THE TESSERACT",
+    "proceedToShield": "PROCEED TO SHIELD WORLD",
+    "placeStone": "PLACE STONE",
+    "activateTesseract": "ACTIVATE TESSERACT",
+    "replayJourney": "REPLAY JOURNEY",
+    "returnToHub": "RETURN TO MAIN STREAM",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "unlock": "Unlock"
   },
   "progress": {
     "overall": "Overall Progress",
@@ -57,28 +205,215 @@
     "xp": "XP",
     "level": "Level",
     "stage": "Stage",
-    "mission": "Mission"
+    "mission": "Mission",
+    "studentProgress": "Student Progress",
+    "domainProgress": "Domain Progress",
+    "strongTopics": "Strong Topics",
+    "topicsToImprove": "Topics to Improve",
+    "recentActivity": "Recent Activity",
+    "recommendedMission": "Recommended Mission",
+    "learningPerformance": "Learning Performance"
   },
   "stones": {
     "scienceStone": "The Luminal Stone",
     "technologyStone": "The Circuit Stone",
     "engineeringStone": "The Forge Stone",
     "mathematicsStone": "The Axiom Stone",
-    "collectedFormat": "{{count}} / 4 Stones Collected",
+    "scienceStoneDesc": "A crystallized shard of pure knowledge — forged from the light of a thousand discoveries. It pulses with the energy of the natural world.",
+    "technologyStoneDesc": "Woven from digital threads and silicon dreams, this stone hums with computational power. It is the heartbeat of the machine age.",
+    "engineeringStoneDesc": "Carved from the material of creation itself, the Forge Stone carries the weight of every bridge, engine, and structure ever built.",
+    "mathematicsStoneDesc": "Ancient as the cosmos, the Axiom Stone contains every truth that can be proven. Its geometry shifts and reforms in perfect symmetry.",
     "acquired": "STONE ACQUIRED",
+    "unlocked": "{{name}} Unlocked!",
+    "collectedFormat": "{{count}} / 4 Stones Collected",
     "mastered": "DOMAIN MASTERED"
   },
   "story": {
-    "futureSelf": "Future Self",
+    "futureSelf": "Future Morales",
     "youngMan": "Morales",
     "tesseract": "Tesseract",
     "timePortal": "Time Portal",
+    "environment": "...",
     "choosePath": "Choose your path."
+  },
+  "dialogue": {
+    "intro-01": "Where am I...?",
+    "intro-02": "What is this place?",
+    "intro-03": "Hello...? Is anyone there?",
+    "intro-04": "          ",
+    "p3-01": "Who... who are you?",
+    "p3-02": "I am you.",
+    "p3-03": "You...? That's impossible.",
+    "p3-04": "Your future self. I have come from a time yet to unfold.",
+    "p3-05": "The world is heading toward a dangerous future.",
+    "p3-06": "You have been given a rare chance to change it.",
+    "p3-07": "Why should I trust you?",
+    "p3-08": "Because I have already lived through everything you are about to face. There is not much time.",
+    "p3-09": "If you want to save the world, you must gain the knowledge you will need.",
+    "p3-10": "What knowledge?",
+    "p3-11": "The four pillars of STEM. Science. Technology. Engineering. Mathematics.",
+    "p3-12": "Master all four, and you will have the power to face what is coming.",
+    "p3-13": "I have something for you.",
+    "p3-14": "The Tesseract. The key to your entire journey.",
+    "p3-15": "Each learning path you complete will reward you with a special stone.",
+    "p3-16": "Four domains. Four paths. Four stones. You will need all of them.",
+    "p3-17": "Take it. It will guide you.",
+    "p3-18": "The journey will not be easy. But you are stronger than you know.",
+    "p3-19": "Trust the Tesseract. It will show you the way.",
+    "p3-20": "I will return... when you are ready.",
+    "p4-01": "So this is what the Tesseract was meant to do...",
+    "p4-02": "Then this is where my journey begins.",
+    "sci-comp-01": "You have mastered the Science path, Morales. You did not simply complete challenges; you learned how to think.",
+    "sci-comp-02": "Science has given you the power to understand what others cannot see. Observe, question, and discover.",
+    "tech-comp-01": "You have mastered the Technology path, Morales. You did not simply complete challenges; you learned how to think.",
+    "tech-comp-02": "Technology has given you the power to create. Think in systems, give instructions, and solve problems.",
+    "eng-comp-01": "You have mastered the Engineering path, Morales. You did not simply complete challenges; you learned how to think.",
+    "eng-comp-02": "Engineering has taught you how ideas become reality. Design, test, fail, and improve.",
+    "math-comp-01": "You have mastered the Mathematics path, Morales. You did not simply complete challenges; you learned how to think.",
+    "math-comp-02": "Mathematics has given you the power to see structure within complexity. Recognize patterns, reason, and find hidden relationships.",
+    "hook-comp-01": "Morales... you have gathered all four stones. You have completed the foundation.",
+    "hook-comp-02": "The Tesseract is fully aligned and beginning to awaken. But the final mission has not yet begun.",
+    "hook-comp-03": "Prepare yourself. The final gateway will open soon.",
+    "m-intro-01": "So this is the world my future self was talking about...",
+    "m-intro-02": "Four paths... four kinds of knowledge.",
+    "hub-Moralestone-dialog-1": "One path has been completed, Morales. Three remain. The Tesseract is beginning to awaken. Keep moving.",
+    "hub-Moralestone-dialog-2": "Two paths are active. The future timeline is beginning to bend. Your efforts are making a difference. Do not stop.",
+    "hub-Moralestone-dialog-3": "Three stones are united in the inventory. Only one pillar remains. The Tesseract energy is pulsing. The final test is near.",
+    "hub-Moralestone-dialog-4": "You have gathered what you were searching for. The foundations are complete. But the final mission has not yet begun.",
+    "p1-01": "You did it. You have completed all four STEM domains and collected all four stones.",
+    "p1-02": "I completed everything you asked me to. But what are these stones really for?",
+    "p1-03": "These stones represent more than your achievements.",
+    "p1-04": "Each one carries the knowledge and abilities you gained from Science, Technology, Engineering, and Mathematics.",
+    "p1-05": "Then what do I have to do now?",
+    "p1-06": "There is one final step.",
+    "p1-07": "Follow the path. At the end, you will find where the four stones belong.",
+    "p1-08": "The final step awaits...",
+    "p2-01": "What... have I become?",
+    "p2-02": "You have become the person you were meant to become.",
+    "p2-03": "Your power was never in the suit.",
+    "p2-04": "The suit represents what you gained through your journey — knowledge, creativity, logic, problem-solving, and the courage to learn.",
+    "p2-05": "Then I am ready.",
+    "p2-06": "Yes. You are now ready to shape the future.",
+    "p2-07": "Will I see you again?",
+    "p2-08": "You won't need to.",
+    "p2-09": "From now on, the future is in your hands."
   },
   "finalConclusion": {
     "fourStones": "Four Stones Placed",
     "tesseractActivated": "Tesseract Activated",
     "hero": "STEM Hero",
-    "ending": "KNOWLEDGE SHAPES THE FUTURE."
+    "ending": "KNOWLEDGE SHAPES THE FUTURE.",
+    "heroTransformation": "KNOWLEDGE HAS BECOME YOUR POWER. STEM HERO",
+    "chamberTitle": "CHAMBER OF ALIGNMENT",
+    "chamberDesc": "Place each stone into its designated altar to awaken the Tesseract.",
+    "placeAllStones": "PLACE ALL FOUR STONES TO AWAKEN THE TESSERACT",
+    "energyConverging": "ENERGY CONVERGING... TRANSFORMING..."
+  },
+  "auth": {
+    "landingTitle": "S.H.I.E.L.D.",
+    "landingSub": "TESSERACT STEM HERO",
+    "feature1Title": "Cinematic Story",
+    "feature1Desc": "Unfold your future through time portals and mysterious Tesseract gateways.",
+    "feature2Title": "4 STEM Pillars",
+    "feature2Desc": "Master Science, Technology, Engineering, and Mathematics.",
+    "feature3Title": "Collect Stones",
+    "feature3Desc": "Earn all four stones to unlock your STEM Hero power.",
+    "signInTitle": "Welcome Back, Agent",
+    "signInSub": "Enter your credentials to continue your journey",
+    "emailLabel": "Email Address",
+    "passwordLabel": "Password",
+    "signUpTitle": "Join S.H.I.E.L.D. Initiative",
+    "signUpSub": "Create an account to save your STEM learning progress",
+    "confirmPasswordLabel": "Confirm Password",
+    "alreadyHaveAccount": "Already have an account? Sign In",
+    "dontHaveAccount": "Don't have an account? Sign Up"
+  },
+  "badges": {
+    "badge-01": {
+      "name": "STEM Explorer",
+      "desc": "Completed your first STEM learning path."
+    },
+    "badge-02": {
+      "name": "Luminal Master",
+      "desc": "Mastered all Science challenges."
+    },
+    "badge-03": {
+      "name": "Circuit Builder",
+      "desc": "Mastered all Technology challenges."
+    },
+    "badge-04": {
+      "name": "Forge Specialist",
+      "desc": "Mastered all Engineering challenges."
+    },
+    "badge-05": {
+      "name": "Axiom Genius",
+      "desc": "Mastered all Mathematics challenges."
+    },
+    "badge-06": {
+      "name": "Tesseract Champion",
+      "desc": "Collected all four STEM stones."
+    }
+  },
+  "stageMap": {
+    "centralRelic": "Central Relic",
+    "fragmentsAcquired": "Fragments Acquired",
+    "secured": "SECURED",
+    "stage": "STAGE",
+    "completed": "Completed",
+    "locked": "LOCKED",
+    "enterStage": "ENTER STAGE",
+    "backToStages": "Back to Stages",
+    "completeMissionsPrompt": "Complete each mission in order. Boss unlocks after all 9 missions!",
+    "stageCompleteFragment": "✓ Stage complete — Fragment secured!",
+    "completeMissionsForBoss": "Complete all missions to unlock the Stage Boss.",
+    "discover": "DISCOVER",
+    "understand": "UNDERSTAND",
+    "lifeEarth": "LIFE & EARTH",
+    "mastery": "MASTERY",
+    "sciDesc": "Master observation, forces, energy, life science, and scientific method. Complete all 4 Stage Bosses to unlock the Science Stone!",
+    "sciDesc1": "Learn through observation, measurement, and experiments. Explore matter, light, sound, magnetism and forces.",
+    "sciDesc2": "Dive deeper into motion, force, energy, electricity, circuits, chemical changes, and density.",
+    "sciDesc3": "Explore cells, the human body, plants, food chains, ecosystems, the water cycle, and environmental science.",
+    "sciDesc4": "Master the scientific method, design experiments, analyze data, and solve complex integrated science challenges.",
+    "techDesc": "Master binary logic, programming, algorithms, web & cybersecurity. Complete all 4 Stage Bosses to unlock the Technology Stone!",
+    "techDesc1": "Learn computer basics, hardware vs software, binary counting, input/output devices, and file management.",
+    "techDesc2": "Master algorithms, flowcharts, pseudocode, block programming, variables, conditionals, and loops.",
+    "techDesc3": "Explore the internet, web pages, HTML/CSS basics, digital safety, cyber threats, and online privacy.",
+    "techDesc4": "Master software engineering, AI concepts, data structures, cloud computing, and real-world tech systems.",
+    "engDesc": "Master structural design, mechanics, electrical systems, and robotics. Complete all 4 Stage Bosses to unlock the Engineering Stone!",
+    "engDesc1": "Discover simple machines, levers, pulleys, gears, structural shapes, forces, and engineering design process.",
+    "engDesc2": "Design bridges, towers, mechanisms, electrical circuits, energy conversion, and material strength.",
+    "engDesc3": "Build complex systems, robotics, pneumatic/hydraulic power, automation, and environmental engineering.",
+    "engDesc4": "Master advanced structural engineering, aerodynamics, space launch systems, systems integration, and failure analysis.",
+    "mathDesc": "Master arithmetic, geometry, algebra, and mathematical ciphers. Complete all 4 Stage Bosses to unlock the Mathematics Stone!",
+    "mathDesc1": "Master number patterns, spatial geometry, basic equations, fractions, decimals, and measurement.",
+    "mathDesc2": "Explore algebra, ratios, proportions, coordinate geometry, statistics, and probability.",
+    "mathDesc3": "Master advanced algebra, trigonometry, geometric proofs, functions, exponents, and scale balance equations.",
+    "mathDesc4": "Master calculus concepts, matrices, cryptography, complex ciphers, and multi-variable logic matrices."
+  },
+  "chatbot": {
+    "title": "SHIELD AI ASSISTANT",
+    "status": "ONLINE",
+    "placeholder": "Ask a doubt about this mission...",
+    "send": "Send",
+    "askHint": "💡 Hint",
+    "explainConcept": "📖 Concept",
+    "stepByStep": "🔍 Steps",
+    "whyWrong": "❓ Why Wrong?",
+    "mic": "Voice Input",
+    "thinking": "SHIELD AI is analyzing..."
+  },
+  "auth": {
+    "login": "LOGIN",
+    "studentLogin": "STUDENT LOGIN",
+    "teacherLogin": "TEACHER LOGIN",
+    "enterYourName": "ENTER YOUR NAME",
+    "usernameLabel": "STUDENT ID / NAME",
+    "passwordLabel": "PASSWORD",
+    "continue": "CONTINUE",
+    "student": "STUDENT",
+    "teacher": "TEACHER",
+    "demoMode": "DEMO MODE",
+    "accessGranted": "ACCESS GRANTED"
   }
 }

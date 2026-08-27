@@ -60,3 +60,29 @@ export function getStoneById(id: string): Stone | undefined {
 export function getStoneByDomain(domainId: string): Stone | undefined {
   return STONES.find((s) => s.domainId === domainId);
 }
+
+export function getLocalizedStone(stone: Stone, t: (key: string, options?: any) => string): Stone {
+  if (!stone) return stone;
+
+  const keyMap: Record<string, string> = {
+    'science-stone': 'scienceStone',
+    'technology-stone': 'technologyStone',
+    'engineering-stone': 'engineeringStone',
+    'mathematics-stone': 'mathematicsStone',
+  };
+
+  const key = keyMap[stone.id] || stone.id;
+  const name = t(`stones.${key}`, { defaultValue: stone.name });
+  const description = t(`stones.${key}Desc`, { defaultValue: stone.description });
+
+  return {
+    ...stone,
+    name,
+    description,
+  };
+}
+
+export function getLocalizedStones(t: (key: string, options?: any) => string): Stone[] {
+  return STONES.map((s) => getLocalizedStone(s, t));
+}
+

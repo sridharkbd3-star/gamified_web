@@ -35,8 +35,10 @@ import { CharacterReveal } from './CharacterReveal';
 import { TesseractObject } from './TesseractObject';
 import { CinematicDialoguePanel } from './CinematicDialoguePanel';
 import { LanguageSelector } from '../ui/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 import { audioSynth } from '../../utils/audio';
 import type { DialogueLine } from '../../types';
+import { getLocalizedDialogueList } from '../../data/dialogue';
 
 interface FinalConclusionPhase2Props {
   onReplay: () => void;
@@ -171,6 +173,8 @@ export const FinalConclusionPhase2: React.FC<FinalConclusionPhase2Props> = ({
   onReplay,
   onReturnToHub,
 }) => {
+  const { t } = useTranslation();
+  const dialogues = getLocalizedDialogueList(PHASE2_DIALOGUES, t);
   const [muted, setMuted] = useState(() => audioSynth.getMuted());
   const [step, setStep] = useState<Phase2Step>('path-journey');
 
@@ -611,11 +615,11 @@ export const FinalConclusionPhase2: React.FC<FinalConclusionPhase2Props> = ({
               {step === 'future-self-dialogue' && (
                 <div className="absolute bottom-6 left-0 right-0 z-40 px-4 max-w-4xl mx-auto">
                   <CinematicDialoguePanel
-                    line={PHASE2_DIALOGUES[dialogueIdx]}
+                    line={dialogues[dialogueIdx]}
                     isVisible={true}
                     onAdvance={handleAdvanceDialogue}
                     lineIndex={dialogueIdx}
-                    totalLines={PHASE2_DIALOGUES.length}
+                    totalLines={dialogues.length}
                   />
                 </div>
               )}

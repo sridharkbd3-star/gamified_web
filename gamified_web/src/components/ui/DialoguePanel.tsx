@@ -10,9 +10,11 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { GlassPanel } from './GlassPanel';
 import { fadeIn, slideUp } from '../../animations/variants';
 import type { DialogueLine } from '../../types';
+import { getLocalizedDialogueLine } from '../../data/dialogue';
 
 interface DialoguePanelProps {
   /** Current line to display. Pass null to hide the panel. */
@@ -27,12 +29,15 @@ interface DialoguePanelProps {
 }
 
 export const DialoguePanel: React.FC<DialoguePanelProps> = ({
-  currentLine,
+  currentLine: rawLine,
   isVisible = false,
   speakerAvatar,
   onAdvance,
   className = '',
 }) => {
+  const { t } = useTranslation();
+  const currentLine = rawLine ? getLocalizedDialogueLine(rawLine, t) : null;
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -104,11 +109,11 @@ export const DialoguePanel: React.FC<DialoguePanelProps> = ({
             {/* Advance indicator */}
             <button
               onClick={onAdvance}
-              className="absolute bottom-4 right-4 text-status cursor-pointer opacity-60 hover:opacity-100 transition-opacity focus-visible:ring-2 rounded"
+              className="absolute bottom-4 right-4 text-status cursor-pointer opacity-60 hover:opacity-100 transition-opacity focus-visible:ring-2 rounded flex items-center gap-1"
               style={{ color: 'var(--color-primary)', background: 'none', border: 'none' }}
               aria-label="Continue dialogue"
             >
-              ▶ Continue
+              ▶ {t('actions.continue', 'Continue')}
             </button>
           </GlassPanel>
         </motion.div>

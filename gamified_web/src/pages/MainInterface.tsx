@@ -18,17 +18,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Volume2,
-  VolumeX,
-  User,
-  BarChart2,
-  Briefcase,
-  Settings,
-  HelpCircle,
   X,
   ShieldAlert,
-  BookOpen,
-  Zap,
 } from 'lucide-react';
 
 import { useReducedMotion } from '../hooks';
@@ -40,12 +31,14 @@ import { CharacterReveal } from '../components/story/CharacterReveal';
 import { TesseractObject } from '../components/story/TesseractObject';
 import { CinematicDialoguePanel } from '../components/story/CinematicDialoguePanel';
 import { Modal } from '../components/ui/Modal';
-import { LanguageSelector } from '../components/ui/LanguageSelector';
+import { SpatialHUDHeader } from '../components/ui/SpatialHUDHeader';
+import { StudentDoubtModal } from '../components/ui/StudentDoubtModal';
 import { DemoModeOverlay, DemoModeBadge } from '../components/demo/DemoModeOverlay';
 
 // â”€â”€ State & Context â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import { useGameState } from '../context/GameStateContext';
-import { STEM_DOMAINS } from '../data/domains';
+import { STEM_DOMAINS, getLocalizedDomains } from '../data/domains';
+import { getLocalizedStones } from '../data/stones';
 import { audioSynth } from '../utils/audio';
 import { clearSessionEmail } from '../utils/gameStorage';
 import type { DomainId, DialogueLine } from '../types';
@@ -74,9 +67,12 @@ export const MainInterface: React.FC = () => {
   const prefersReduced = useReducedMotion();
   const isFirstVisit = state.isFirstMainInterfaceVisit ?? true;
 
+  const localizedDomains = getLocalizedDomains(t);
+  const localizedStones = getLocalizedStones(t);
+
   // Helper to calculate progress of a domain dynamically
   const getDomainProgress = (domainId: DomainId) => {
-    const domain = STEM_DOMAINS.find((d) => d.id === domainId);
+    const domain = localizedDomains.find((d) => d.id === domainId);
     if (!domain) return 0;
     const completedCount = domain.stages.filter((stg) =>
       state.completedStageIds.includes(stg.id)
@@ -148,6 +144,7 @@ export const MainInterface: React.FC = () => {
 
   // Modal states
   const [activeModal, setActiveModal] = useState<'profile' | 'progress' | 'inventory' | 'settings' | 'help' | null>(null);
+  const [showDoubtModal, setShowDoubtModal] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // References
@@ -510,7 +507,7 @@ export const MainInterface: React.FC = () => {
                             transition: 'all 0.4s ease',
                           }}
                         >
-                          {t(`domains.${domain.id}`, domain.name)}
+                          {t(`domains.${domain.id}.name`, domain.name)}
                         </h3>
                         <p
                           style={{
@@ -785,172 +782,17 @@ export const MainInterface: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* â”€â”€ Layer 5: HUD (Heads Up Display Layer) â”€â”€ */}
+      {/* ── Layer 5: HUD (Heads Up Display Layer) ── */}
       {revealStage === 'interactive' && (
         <>
-          {/* Top Left: Player Status badge */}
-          <div
-            className="absolute top-6 left-6"
-            style={{
-              zIndex: 50,
-              background: 'rgba(5,5,18,0.65)',
-              border: '1px solid rgba(0,180,255,0.15)',
-              borderRadius: '10px',
-              padding: '8px 14px',
-              backdropFilter: 'blur(8px)',
-              pointerEvents: activeDomainId ? 'none' : 'auto',
-              opacity: activeDomainId ? 0.15 : 1.0,
-              transition: 'opacity 0.6s ease',
-            }}
-          >
-            <div
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.55rem',
-                letterSpacing: '0.12em',
-                color: 'rgba(0,180,255,0.5)',
-                textTransform: 'uppercase',
-              }}
-            >
-              Player Status
-            </div>
-            <div
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.75rem',
-                letterSpacing: '0.08em',
-                color: '#ffffff',
-                marginTop: '2px',
-              }}
-            >
-              Morales <span style={{ color: 'var(--color-primary)' }}>Lv.1</span>
-            </div>
-          </div>
-
-          {/* Top Right: System settings row */}
-          <div
-            className="absolute top-6 right-6 flex items-center gap-2"
-            style={{
-              zIndex: 50,
-              pointerEvents: activeDomainId ? 'none' : 'auto',
-              opacity: activeDomainId ? 0.15 : 1.0,
-              transition: 'opacity 0.6s ease',
-            }}
-          >
-            {/* Multilingual Language Selector */}
-            <LanguageSelector />
-
-            {/* Hackathon Demo / Cheat Mode Button */}
-            <button
-              onClick={() => setShowDemoOverlay(true)}
-              title="Hackathon Demo / Cheat Mode"
-              aria-label="Hackathon Demo / Cheat Mode"
-              className="h-8 px-3 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-display text-[10px] font-bold tracking-widest uppercase transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)] flex items-center gap-1.5 cursor-pointer"
-            >
-              <Zap size={13} className="text-amber-400 animate-pulse" />
-              <span className="hidden sm:inline">DEMO MODE</span>
-            </button>
-
-            {/* Story Recall Button */}
-            <button
-              onClick={() => {
-                dispatch({ type: 'SET_STORY_RECALL_MODE', active: true });
-                navigateTo('INTRO');
-              }}
-              title="REVISIT YOUR JOURNEY"
-              aria-label="REVISIT YOUR JOURNEY"
-              style={{
-                height: '32px',
-                padding: '0 10px',
-                borderRadius: '8px',
-                background: 'rgba(5,5,18,0.65)',
-                border: '1px solid rgba(0,180,255,0.15)',
-                color: 'rgba(0,180,255,0.65)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                cursor: 'pointer',
-                backdropFilter: 'blur(8px)',
-                transition: 'all 0.2s ease',
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.65rem',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#ffffff';
-                e.currentTarget.style.borderColor = 'rgba(0,180,255,0.45)';
-                e.currentTarget.style.boxShadow = '0 0 10px rgba(0,180,255,0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(0,180,255,0.65)';
-                e.currentTarget.style.borderColor = 'rgba(0,180,255,0.15)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <BookOpen size={12} />
-              <span className="hidden sm:inline">Story</span>
-            </button>
-
-            {[
-              { icon: <User size={14} />, tooltip: 'Profile', key: 'profile' },
-              { icon: <BarChart2 size={14} />, tooltip: 'Progress', key: 'progress' },
-              { icon: <Briefcase size={14} />, tooltip: 'Inventory', key: 'inventory' },
-              { icon: <Settings size={14} />, tooltip: 'Settings', key: 'settings' },
-              { icon: <HelpCircle size={14} />, tooltip: 'Help', key: 'help' },
-            ].map((btn) => (
-              <button
-                key={btn.key}
-                onClick={() => setActiveModal(btn.key as any)}
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '8px',
-                  background: 'rgba(5,5,18,0.65)',
-                  border: '1px solid rgba(0,180,255,0.15)',
-                  color: 'rgba(0,180,255,0.65)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  backdropFilter: 'blur(8px)',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#ffffff';
-                  e.currentTarget.style.borderColor = 'rgba(0,180,255,0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgba(0,180,255,0.65)';
-                  e.currentTarget.style.borderColor = 'rgba(0,180,255,0.15)';
-                }}
-                aria-label={btn.tooltip}
-              >
-                {btn.icon}
-              </button>
-            ))}
-
-            {/* Mute button */}
-            <button
-              onClick={handleToggleMute}
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'rgba(5,5,18,0.65)',
-                border: '1px solid rgba(0,180,255,0.15)',
-                color: muted ? 'rgba(0,180,255,0.4)' : '#00e5ff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                backdropFilter: 'blur(8px)',
-                transition: 'all 0.2s ease',
-              }}
-              aria-label={muted ? 'Unmute sound' : 'Mute sound'}
-            >
-              {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-            </button>
+          <div className="absolute top-0 left-0 right-0 z-[60]">
+            <SpatialHUDHeader
+              title="S.H.I.E.L.D."
+              subtitle="STEM HUB // SECURE PORTAL"
+              onOpenModal={(modal) => setActiveModal(modal as any)}
+              onOpenDoubtModal={() => setShowDoubtModal(true)}
+              onOpenDemo={() => setShowDemoOverlay(true)}
+            />
           </div>
 
           {/* Bottom HUD: Progress Stone slots bar */}
@@ -1101,12 +943,7 @@ export const MainInterface: React.FC = () => {
             â€œYour collected STEM stones will appear here.â€
           </p>
           <div className="grid grid-cols-4 gap-3">
-            {[
-              { id: 'science-stone', name: 'Science', color: '#00e5ff' },
-              { id: 'technology-stone', name: 'Technology', color: '#7b2fff' },
-              { id: 'engineering-stone', name: 'Engineering', color: '#ff9500' },
-              { id: 'mathematics-stone', name: 'Mathematics', color: '#00ff88' },
-            ].map((stn, i) => {
+            {localizedStones.map((stn, i) => {
               const isCollected = state.player.collectedStones.includes(stn.id as any);
               return (
                 <div
@@ -1117,7 +954,7 @@ export const MainInterface: React.FC = () => {
                     boxShadow: isCollected ? `inset 0 0 10px ${stn.color}40, 0 0 10px ${stn.color}20` : 'none',
                     transition: 'all 0.3s ease',
                   }}
-                  title={`${stn.name} Stone â€” ${isCollected ? 'Collected' : 'Locked'}`}
+                  title={`${stn.name} — ${isCollected ? 'Collected' : 'Locked'}`}
                 >
                   <div
                     className="w-6 h-6 rounded-full flex items-center justify-center font-display text-[9px]"
@@ -1345,6 +1182,12 @@ export const MainInterface: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Student Doubt & Help Modal */}
+      <StudentDoubtModal
+        isOpen={showDoubtModal}
+        onClose={() => setShowDoubtModal(false)}
+      />
 
       {/* Demo Mode Overlay Modal */}
       {showDemoOverlay && (

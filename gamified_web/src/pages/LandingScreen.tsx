@@ -23,10 +23,12 @@ import {
 } from 'lucide-react';
 import { useGameState } from '../context/GameStateContext';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 import { staggerContainer, staggerChild } from '../animations/variants';
 
 export const LandingScreen: React.FC = () => {
   const { navigateTo, dispatch } = useGameState();
+  const { t } = useTranslation();
   const [isMuted, setIsMuted] = useState(false);
 
   // Mouse Parallax for Desktop Background Layers
@@ -58,7 +60,7 @@ export const LandingScreen: React.FC = () => {
   }, [mouseX, mouseY]);
 
   const handleStartAdventure = () => {
-    navigateTo('SIGN_IN');
+    navigateTo('LANGUAGE_SELECTION');
   };
 
   const handleDiscoverShield = () => {
@@ -88,6 +90,7 @@ export const LandingScreen: React.FC = () => {
         stagePerformance: {},
         _version: 1,
         currentUserEmail: guestEmail,
+        userRole: 'student',
         hasSeenIntroStory: false,
       },
     });
@@ -481,7 +484,7 @@ export const LandingScreen: React.FC = () => {
               {/* Button shine sweep effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
               
-              <span className="relative z-10">Start Adventure</span>
+              <span className="relative z-10">{t('actions.startLearning', 'Start Adventure')}</span>
               <ArrowRight size={16} className="relative z-10 group-hover:translate-x-1 transition-transform" />
             </button>
 

@@ -288,3 +288,39 @@ export const STEM_DOMAINS: STEMDomain[] = [
 export function getDomainById(id: string): STEMDomain | undefined {
   return STEM_DOMAINS.find((d) => d.id === id);
 }
+
+export function getLocalizedDomain(domain: STEMDomain, t: (key: string, options?: any) => string): STEMDomain {
+  if (!domain) return domain;
+
+  const domainKey = domain.id;
+  const name = t(`domains.${domainKey}.name`, { defaultValue: domain.name });
+  const shortName = t(`domains.${domainKey}.shortName`, { defaultValue: domain.shortName });
+  const description = t(`domains.${domainKey}.desc`, { defaultValue: domain.description });
+  const longDescription = t(`domains.${domainKey}.longDesc`, { defaultValue: domain.longDescription });
+
+  const stages = domain.stages.map((stg) => {
+    const stgKey = stg.id;
+    return {
+      ...stg,
+      title: t(`domains.${domainKey}.stages.${stgKey}.title`, { defaultValue: stg.title }),
+      description: t(`domains.${domainKey}.stages.${stgKey}.desc`, { defaultValue: stg.description }),
+      concept: t(`domains.${domainKey}.stages.${stgKey}.concept`, { defaultValue: stg.concept }),
+      learningObjective: t(`domains.${domainKey}.stages.${stgKey}.learningObjective`, { defaultValue: stg.learningObjective }),
+      reward: t(`domains.${domainKey}.stages.${stgKey}.reward`, { defaultValue: stg.reward }),
+    };
+  });
+
+  return {
+    ...domain,
+    name,
+    shortName,
+    description,
+    longDescription,
+    stages,
+  };
+}
+
+export function getLocalizedDomains(t: (key: string, options?: any) => string): STEMDomain[] {
+  return STEM_DOMAINS.map((d) => getLocalizedDomain(d, t));
+}
+

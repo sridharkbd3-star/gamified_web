@@ -19,6 +19,11 @@ import {
 import { useGameState } from '../context/GameStateContext';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
 import { DemoModeOverlay } from '../components/demo/DemoModeOverlay';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedLevel } from '../utils/levelUtils';
+import { MissionCharacterDisplay } from '../components/ui/MissionCharacterDisplay';
+import { ShieldAIChatbot } from '../components/ui/ShieldAIChatbot';
+import { getConceptExplanation } from '../utils/conceptExplanations';
 import { MATHEMATICS_LEVELS, getLevelsByStage } from '../data/mathematicsLevels';
 import type { MathLevel } from '../data/mathematicsLevels';
 import { audioSynth } from '../utils/audio';
@@ -304,6 +309,7 @@ const getSimplifiedLevelTexts = (level: MathLevel) => {
 
 export const MathematicsWorld: React.FC = () => {
   const { state, dispatch, navigateTo } = useGameState();
+  const { t } = useTranslation();
   
   const handleReturnToHub = () => {
     dispatch({ type: 'EXIT_DOMAIN' });
@@ -314,6 +320,7 @@ export const MathematicsWorld: React.FC = () => {
   const [viewMode, setViewMode] = useState<'domain-map' | 'stage-levels' | 'gameplay'>('domain-map');
   const [selectedStageNum, setSelectedStageNum] = useState<number>(1);
   const [activeLevel, setActiveLevel] = useState<MathLevel | null>(null);
+  const currentLevel = activeLevel ? getLocalizedLevel(activeLevel, t) : null;
   const [missionStarted, setMissionStarted] = useState(false);
   const [muted, setMuted] = useState(() => audioSynth.getMuted());
   const [showDemoOverlay, setShowDemoOverlay] = useState(false);
@@ -788,15 +795,9 @@ export const MathematicsWorld: React.FC = () => {
                 <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
                 
                 <div>
-                  <span className="font-display text-xs tracking-widest text-[#00ff88] uppercase block mb-1">
-                    Central Relic
-                  </span>
-                  <h2 className="font-display text-xl tracking-wider text-slate-100 uppercase">
-                    Mathematics Stone
-                  </h2>
-                  <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-                    Master number patterns, equations, geometry, and problem solving. Collect all 4 Stone Fragments from Stage Bosses to form the Mathematics Stone!
-                  </p>
+                  <span className="font-display text-xs tracking-widest text-[#00ff88] uppercase block mb-1">{t('stageMap.centralRelic', 'Central Relic')}</span>
+                  <h2 className="font-display text-xl tracking-wider text-slate-100 uppercase">{t('stones.mathematicsStone', 'The Axiom Stone')}</h2>
+                  <p className="text-sm text-slate-400 mt-2 leading-relaxed">{t('stageMap.mathDesc', 'Master arithmetic, geometry, algebra, and mathematical ciphers. Complete all 4 Stage Bosses to unlock the Mathematics Stone!')}</p>
                 </div>
 
                 {/* The Stone Visual hologram */}
@@ -832,9 +833,9 @@ export const MathematicsWorld: React.FC = () => {
                 </div>
 
                 <div className="border-t border-slate-800/40 pt-4 flex justify-between items-center text-sm text-slate-500">
-                  <span>Fragments Acquired:</span>
+                  <span>{t('stageMap.fragmentsAcquired', 'Fragments Acquired')}:</span>
                   <span className="font-display text-[#00ff88] font-bold">
-                    {[1,2,3,4].filter(num => isStageCompleted(num)).length} / 4 SECURED
+                    {[1,2,3,4].filter(num => isStageCompleted(num)).length} / 4 {t('stageMap.secured', 'SECURED')}
                   </span>
                 </div>
               </div>
@@ -844,30 +845,26 @@ export const MathematicsWorld: React.FC = () => {
                 {[
                   {
                     num: 1,
-                    title: 'STAGE 1 — FOUNDATIONS',
-                    desc: 'Learn number patterns, simple equations, fractions, coordinates, and basic geometry through exciting rescue missions.',
-                    objective: 'Perfect for beginners — clear explanations and guided missions.',
+                    title: `${t('stageMap.stage', 'STAGE')} 1 — ${t('stageMap.discover', 'DISCOVER')}`,
+                    desc: t('stageMap.mathDesc1', 'Master number patterns, spatial geometry, basic equations, fractions, decimals, and measurement.'),
                     locked: false,
                   },
                   {
                     num: 2,
-                    title: 'STAGE 2 — REASONING',
-                    desc: 'Combine your skills to solve multi-step challenges, navigate complex grid systems, and decrypt coded messages.',
-                    objective: 'More complex problems with multiple steps and decisions.',
+                    title: `${t('stageMap.stage', 'STAGE')} 2 — ${t('stageMap.understand', 'UNDERSTAND')}`,
+                    desc: t('stageMap.mathDesc2', 'Explore algebra, ratios, proportions, coordinate geometry, statistics, and probability.'),
                     locked: !isStageUnlocked(2),
                   },
                   {
                     num: 3,
-                    title: 'STAGE 3 — APPLICATION',
-                    desc: 'Apply mathematics to real crisis situations: manage resources, calculate geometry, and read data graphs.',
-                    objective: 'Real-world math in emergency scenarios.',
+                    title: `${t('stageMap.stage', 'STAGE')} 3 — ${t('stageMap.lifeEarth', 'ADVANCED')}`,
+                    desc: t('stageMap.mathDesc3', 'Master advanced algebra, trigonometry, geometric proofs, functions, exponents, and scale balance equations.'),
                     locked: !isStageUnlocked(3),
                   },
                   {
                     num: 4,
-                    title: 'STAGE 4 — MASTERY',
-                    desc: 'Tackle the hardest mathematical challenges: advanced equations, complex patterns, and multi-step optimizations.',
-                    objective: 'Expert-level problem solving and advanced concepts.',
+                    title: `${t('stageMap.stage', 'STAGE')} 4 — ${t('stageMap.mastery', 'MASTERY')}`,
+                    desc: t('stageMap.mathDesc4', 'Master calculus concepts, matrices, cryptography, complex ciphers, and multi-variable logic matrices.'),
                     locked: !isStageUnlocked(4),
                   }
                 ].map(st => {
@@ -886,11 +883,11 @@ export const MathematicsWorld: React.FC = () => {
                       <div className="max-w-[420px]">
                         <div className="flex items-center gap-2">
                           <span className="font-display text-xs tracking-wider font-semibold text-[#00ff88] uppercase">
-                            STAGE {st.num}
+                            {t('stageMap.stage', 'STAGE')} {st.num}
                           </span>
                           {completed && (
                             <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-display text-xs font-bold tracking-widest uppercase">
-                              ✓ Completed
+                              ✓ {t('stageMap.completed', 'Completed')}
                             </span>
                           )}
                         </div>
@@ -905,14 +902,14 @@ export const MathematicsWorld: React.FC = () => {
                       <div className="flex sm:flex-col items-end gap-2 justify-between shrink-0">
                         {st.locked ? (
                           <div className="flex items-center gap-1.5 text-slate-500 font-display text-xs tracking-widest uppercase">
-                            <Lock size={14} /> LOCKED
+                            <Lock size={14} /> {t('stageMap.locked', 'LOCKED')}
                           </div>
                         ) : (
                           <button
                             onClick={() => handleEnterStage(st.num)}
                             className="px-5 py-2.5 rounded-xl border border-emerald-500 bg-[#00ff88]/10 text-[#00ff88] font-display text-xs font-bold tracking-widest uppercase hover:bg-[#00ff88]/20 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,255,136,0.1)] hover:shadow-[0_0_15px_rgba(0,255,136,0.25)]"
                           >
-                            Enter Stage
+                            {t('stageMap.enterStage', 'ENTER STAGE')}
                           </button>
                         )}
                       </div>
@@ -936,22 +933,23 @@ export const MathematicsWorld: React.FC = () => {
             >
               <div className="text-center mb-8 max-w-xl">
                 <span className="font-display text-xs tracking-widest text-[#00ff88] uppercase block mb-1">
-                  STAGE {selectedStageNum}
+                  {t('stageMap.stage', 'STAGE')} {selectedStageNum}
                 </span>
                 <h1 className="font-display text-3xl tracking-wider text-white uppercase">
-                  {selectedStageNum === 1 && 'Foundations'}
-                  {selectedStageNum === 2 && 'Reasoning'}
-                  {selectedStageNum === 3 && 'Application'}
-                  {selectedStageNum === 4 && 'Mastery'}
+                  {selectedStageNum === 1 && t('stageMap.discover', 'DISCOVER')}
+                  {selectedStageNum === 2 && t('stageMap.understand', 'UNDERSTAND')}
+                  {selectedStageNum === 3 && t('stageMap.lifeEarth', 'ADVANCED')}
+                  {selectedStageNum === 4 && t('stageMap.mastery', 'MASTERY')}
                 </h1>
                 <p className="text-sm text-slate-400 mt-2">
-                  Complete each mission in order. The Stage Boss unlocks after all 9 missions are done!
+                  {t('stageMap.completeMissionsPrompt', 'Complete each mission in order. Boss unlocks after all 9 missions!')}
                 </p>
               </div>
 
               {/* Levels grid */}
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 w-full mb-10">
-                {getLevelsByStage(selectedStageNum).map(level => {
+                {getLevelsByStage(selectedStageNum).map(rawLevel => {
+                  const level = getLocalizedLevel(rawLevel, t);
                   const completed = state.completedStageIds.includes(level.id);
                   const unlocked = isLevelUnlocked(level);
                   const isActive = unlocked && !completed;
@@ -988,7 +986,7 @@ export const MathematicsWorld: React.FC = () => {
 
                       <div>
                         <h4 className="font-display text-xs font-bold text-slate-200 tracking-wider uppercase line-clamp-2">
-                          {level.missionTitle.split(' — ')[1]}
+                          {level.missionTitle.split(' — ')[1] || level.missionTitle}
                         </h4>
                         <span className="text-xs text-slate-400 mt-1 block uppercase tracking-widest font-semibold">
                           +{level.xpReward} XP
@@ -1003,14 +1001,14 @@ export const MathematicsWorld: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Info size={16} className="text-[#00ff88]" />
                   <span className="text-slate-400 text-sm">
-                    {isStageCompleted(selectedStageNum) ? '✓ Stage complete — Fragment secured!' : 'Complete all missions to unlock the Stage Boss.'}
+                    {isStageCompleted(selectedStageNum) ? t('stageMap.stageCompleteFragment', '✓ Stage complete — Fragment secured!') : t('stageMap.completeMissionsForBoss', 'Complete all missions to unlock the Stage Boss.')}
                   </span>
                 </div>
                 <button
                   onClick={() => setViewMode('domain-map')}
                   className="px-5 py-2.5 rounded-xl border border-slate-800 text-slate-300 font-display text-xs tracking-widest uppercase hover:bg-white/5 transition-all cursor-pointer"
                 >
-                  Back to Stages
+                  {t('stageMap.backToStages', 'Back to Stages')}
                 </button>
               </div>
             </motion.div>
@@ -1028,7 +1026,7 @@ export const MathematicsWorld: React.FC = () => {
               className="fixed inset-0 z-50"
             >
               {(() => {
-                const texts = getSimplifiedLevelTexts(activeLevel);
+                const texts = getSimplifiedLevelTexts(currentLevel || activeLevel);
                 const env = getMissionEnvironment(activeLevel);
                 const stageLevels = MATHEMATICS_LEVELS.filter(l => l.stage === activeLevel.stage);
                 const currentHP = attempts <= 1 ? 3 : attempts === 2 ? 2 : 1;
@@ -1076,26 +1074,13 @@ export const MathematicsWorld: React.FC = () => {
 
                           {/* Character portrait area */}
                           <div className="flex-1 flex flex-col justify-center gap-6">
-                            <div className="relative rounded-2xl overflow-hidden border-2 shadow-2xl"
-                              style={{ borderColor: `${env.themeColor}40`, boxShadow: `0 0 40px ${env.themeColor}15` }}>
-                              {/* CRT scanline overlay */}
-                              <div className="absolute inset-0 pointer-events-none z-10"
-                                style={{
-                                  backgroundImage: 'linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.15) 50%)',
-                                  backgroundSize: '100% 4px'
-                                }}
-                              />
-                              <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/70 px-3 py-1 rounded-lg">
-                                <span className="w-2 h-2 rounded-full bg-[#00ff88] animate-ping" />
-                                <span className="text-xs text-[#00ff88] font-mono font-bold">MORALES · ONLINE</span>
-                              </div>
-                              <img
-                                src="/miles-character.jpg"
-                                alt="Agent Morales"
-                                className="w-full object-cover"
-                                style={{ maxHeight: '280px' }}
-                              />
-                            </div>
+                            <MissionCharacterDisplay
+                              src="/miles-character.jpg"
+                              alt="Agent Morales"
+                              themeColor={env.themeColor}
+                              variant="briefing"
+                              onlineLabel="MORALES · ONLINE"
+                            />
 
                             {/* Story dialogue bubble */}
                             <div className="relative p-5 rounded-2xl border bg-black/40 backdrop-blur-sm"
@@ -1281,32 +1266,13 @@ export const MathematicsWorld: React.FC = () => {
                       <div className="lg:col-span-3 border-r border-white/5 bg-black/30 backdrop-blur-sm flex flex-col p-5 gap-5 overflow-y-auto">
                         
                         {/* Character portrait */}
-                        <div className="relative rounded-2xl overflow-hidden border-2 shadow-xl"
-                          style={{ borderColor: `${env.themeColor}35`, boxShadow: `0 0 25px ${env.themeColor}12` }}>
-                          {/* Active indicator */}
-                          <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/80 px-2.5 py-1 rounded-lg">
-                            <span className="w-2 h-2 rounded-full bg-[#00ff88] animate-ping" style={{ boxShadow: '0 0 6px #00ff88' }} />
-                            <span className="text-xs text-[#00ff88] font-mono font-bold">ACTIVE</span>
-                          </div>
-                          {/* CRT effect */}
-                          <div className="absolute inset-0 pointer-events-none z-10"
-                            style={{
-                              backgroundImage: 'linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.12) 50%)',
-                              backgroundSize: '100% 3px'
-                            }}
-                          />
-                          <img
-                            src={showHint ? '/future-self.jpg' : '/miles-character.jpg'}
-                            alt="Agent Morales"
-                            className="w-full object-cover transition-all duration-500"
-                            style={{ maxHeight: '200px' }}
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                            <p className="text-xs font-display text-white font-bold tracking-wider uppercase">
-                              {showHint ? '🔮 FUTURE MORALES' : '⚡ AGENT MORALES'}
-                            </p>
-                          </div>
-                        </div>
+                        <MissionCharacterDisplay
+                          src={showHint ? '/future-self.jpg' : '/miles-character.jpg'}
+                          alt="Agent Morales"
+                          themeColor={env.themeColor}
+                          variant="gameplay"
+                          onlineLabel={showHint ? 'FUTURE MORALES · COMMS' : 'MORALES · ONLINE'}
+                        />
 
                         {/* Audio waveform */}
                         <div className="flex items-center gap-0.5 justify-center h-6 px-2">
@@ -1340,10 +1306,11 @@ export const MathematicsWorld: React.FC = () => {
                             </p>
                           </div>
 
-                          {/* Mission tag */}
-                          <div className="p-3 rounded-xl border border-white/5 bg-white/3">
-                            <p className="text-xs text-slate-500 tracking-widest uppercase font-display mb-1">Concept</p>
-                            <p className="text-sm text-slate-300 font-semibold">{activeLevel.primaryConcept}</p>
+                          <div className="p-3.5 rounded-xl border border-white/10 bg-black/40">
+                            <p className="text-[10px] text-cyan-400 tracking-widest uppercase font-display mb-1 font-bold">💡 CONCEPT: {activeLevel.primaryConcept}</p>
+                            <p className="text-xs text-slate-300 leading-relaxed font-body">
+                              {getConceptExplanation(activeLevel.primaryConcept, activeLevel.levelNumber)}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -1850,113 +1817,97 @@ export const MathematicsWorld: React.FC = () => {
                       </div>
 
                       {/* ─── RIGHT PANEL — Objectives, Hint, Submit ─── */}
-                      <div className="lg:col-span-3 border-l border-white/5 bg-black/30 backdrop-blur-sm flex flex-col p-5 gap-5 overflow-y-auto">
+                      <div className="lg:col-span-3 border-l border-white/5 bg-black/30 backdrop-blur-sm flex flex-col p-4 gap-4 overflow-y-auto">
 
-                        {/* Mission objective */}
-                        <div className="p-4 rounded-xl border border-white/5 bg-white/3">
-                          <span className="font-display text-xs tracking-widest text-slate-500 uppercase block mb-2 font-bold">🎯 Mission Goal</span>
-                          <p className="text-sm text-slate-200 font-semibold leading-relaxed">{texts.objective}</p>
+                        {/* 1. MISSION GOAL */}
+                        <div className="p-3.5 rounded-xl border border-white/10 bg-black/40 shadow-sm shrink-0">
+                          <span className="font-display text-[11px] tracking-widest text-slate-400 uppercase block mb-1 font-bold">🎯 Mission Goal</span>
+                          <p className="text-xs text-slate-100 font-semibold leading-relaxed">{texts.objective}</p>
                         </div>
 
-                        {/* Stage progress */}
-                        <div>
-                          <p className="font-display text-xs tracking-widest text-slate-500 uppercase font-bold mb-3">📍 Stage Progress</p>
-                          <div className="flex flex-col gap-1.5">
-                            {stageLevels.map(l => {
-                              const isCurrent = l.id === activeLevel.id;
-                              const isDone = state.completedStageIds.includes(l.id);
-                              return (
-                                <div key={l.id} className="flex items-center gap-2">
-                                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold font-display shrink-0"
-                                    style={{
-                                      background: isCurrent ? env.themeColor : isDone ? `${env.themeColor}30` : '#1a1a2e',
-                                      color: isCurrent ? '#000' : isDone ? env.themeColor : '#4a4a6a',
-                                      border: `1px solid ${isCurrent ? env.themeColor : isDone ? `${env.themeColor}50` : '#2a2a3e'}`
-                                    }}>
-                                    {isDone ? '✓' : l.levelNumber === 10 ? '★' : l.levelNumber}
-                                  </div>
-                                  <span className={`text-xs leading-tight ${isCurrent ? 'text-white font-semibold' : isDone ? 'text-slate-500' : 'text-slate-700'}`}>
-                                    {l.levelNumber === 10 ? 'Boss' : `Mission ${l.levelNumber}`}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
+                        {/* 2. SHIELD AI ASSISTANT */}
+                        <div className="flex-1 min-h-[220px]">
+                          <ShieldAIChatbot
+                            domainId="mathematics"
+                            domainName="Mathematics"
+                            themeColor={env.themeColor}
+                            stage={activeLevel.stage}
+                            missionNumber={activeLevel.levelNumber}
+                            missionTitle={texts.briefingTitle}
+                            primaryConcept={activeLevel.primaryConcept}
+                            objective={texts.objective}
+                            questionText={texts.story || texts.questionLabel}
+                            submittedAnswer={inputValue || selectedOption || null}
+                            isCorrect={showFeedback ? isCorrect : null}
+                            onTriggerHint={() => setShowHint(true)}
+                            variant="desktop"
+                          />
                         </div>
 
-                        {/* Hint toggle */}
-                        <div className="border-t border-white/5 pt-4">
-                          <button
+                        {/* 3. NEED A HINT? SECTION */}
+                        <div className="border-t border-white/10 pt-3 shrink-0">
+                          <button 
                             onClick={() => { setShowHint(!showHint); if (!showHint) { setHintsUsed(h => h + 1); playTone(700, 0.15, 'sine'); } }}
-                            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 bg-black/40 hover:bg-black/60 text-sm font-display uppercase tracking-wider cursor-pointer transition-all font-bold"
-                            style={{
-                              borderColor: showHint ? '#fbbf24' : '#1e1e2e',
-                              color: showHint ? '#fbbf24' : '#64748b'
-                            }}
+                            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border bg-black/40 hover:bg-black/60 text-xs font-display uppercase tracking-wider cursor-pointer transition-all font-bold"
+                            style={{ borderColor: showHint ? '#fbbf24' : 'rgba(255,255,255,0.1)', color: showHint ? '#fbbf24' : '#94a3b8' }}
                           >
                             <span className="flex items-center gap-2">
-                              <Lightbulb size={16} className={showHint ? 'text-amber-400' : 'text-slate-500'} />
+                              <Lightbulb size={15} className={showHint ? 'text-amber-400' : 'text-slate-400'} />
                               {showHint ? 'Hide Hint' : 'Need a Hint?'}
                             </span>
-                            <span>{showHint ? '▲' : '▼'}</span>
+                            <span className="text-xs">{showHint ? '▲' : '▼'}</span>
                           </button>
                           <AnimatePresence>
                             {showHint && (
-                              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                className="text-sm text-amber-100/80 p-4 rounded-xl bg-amber-950/20 border border-amber-500/20 leading-relaxed mt-2" style={{ whiteSpace: 'pre-line' }}>
+                              <motion.div 
+                                initial={{ opacity: 0, height: 0 }} 
+                                animate={{ opacity: 1, height: 'auto' }} 
+                                exit={{ opacity: 0, height: 0 }}
+                                className="text-xs text-amber-100/90 p-3 rounded-xl bg-amber-950/30 border border-amber-500/30 leading-relaxed mt-2 shadow-inner" 
+                                style={{ whiteSpace: 'pre-line' }}
+                              >
                                 💡 {texts.hintText}
                               </motion.div>
                             )}
                           </AnimatePresence>
                         </div>
 
-                        {/* Feedback + Submit */}
-                        <div className="mt-auto border-t border-white/5 pt-4 flex flex-col gap-3">
-                          {/* Feedback panel */}
+                        {/* 4. CHECK MY ANSWER BUTTON */}
+                        <div className="mt-auto border-t border-white/10 pt-3 flex flex-col gap-2.5 shrink-0">
                           <AnimatePresence>
                             {showFeedback && (
-                              <motion.div
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
+                              <motion.div 
+                                initial={{ opacity: 0, y: 8 }} 
+                                animate={{ opacity: 1, y: 0 }} 
                                 exit={{ opacity: 0, y: -8 }}
-                                className="p-4 rounded-xl border text-sm flex items-start gap-3 leading-relaxed"
-                                style={{
-                                  background: isCorrect ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
-                                  borderColor: isCorrect ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
-                                  color: isCorrect ? '#34d399' : '#f87171'
-                                }}>
-                                <span className="text-xl shrink-0">{isCorrect ? '✅' : '❌'}</span>
+                                className="p-3 rounded-xl border text-xs flex items-start gap-2.5 leading-relaxed"
+                                style={{ background: isCorrect ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', borderColor: isCorrect ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)', color: isCorrect ? '#34d399' : '#f87171' }}
+                              >
+                                <span className="text-lg shrink-0">{isCorrect ? '✅' : '❌'}</span>
                                 <div>
-                                  <span className="font-display text-xs uppercase tracking-wider font-bold block mb-1">
-                                    {isCorrect ? 'CORRECT!' : 'TRY AGAIN'}
-                                  </span>
+                                  <span className="font-display text-xs uppercase tracking-wider font-bold block mb-0.5">{isCorrect ? 'CORRECT!' : 'TRY AGAIN'}</span>
                                   <p className="text-slate-300 text-xs leading-relaxed">{feedbackText}</p>
                                 </div>
                               </motion.div>
                             )}
                           </AnimatePresence>
 
-                          {/* Action button */}
                           {showFeedback && isCorrect ? (
-                            <motion.button
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
+                            <motion.button 
+                              whileHover={{ scale: 1.02 }} 
+                              whileTap={{ scale: 0.98 }} 
                               onClick={handleContinueNext}
-                              className="w-full py-4 rounded-xl border-2 font-display text-base font-extrabold tracking-widest uppercase cursor-pointer transition-all"
-                              style={{
-                                borderColor: '#10b981',
-                                background: 'rgba(16,185,129,0.15)',
-                                color: '#34d399',
-                                boxShadow: '0 0 20px rgba(16,185,129,0.2)'
-                              }}>
+                              className="w-full py-3.5 rounded-xl border-2 font-display text-sm font-extrabold tracking-widest uppercase cursor-pointer transition-all shadow-md"
+                              style={{ borderColor: '#10b981', background: 'rgba(16,185,129,0.15)', color: '#34d399', boxShadow: '0 0 20px rgba(16,185,129,0.2)' }}
+                            >
                               ▶ NEXT MISSION
                             </motion.button>
                           ) : (
-                            <motion.button
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
+                            <motion.button 
+                              whileHover={{ scale: 1.02 }} 
+                              whileTap={{ scale: 0.98 }} 
                               onClick={activeLevel.isBoss ? handleVerifyBossPhase : handleVerifyAnswer}
-                              className="w-full py-4 rounded-xl border-2 font-display text-base font-extrabold tracking-widest uppercase cursor-pointer transition-all"
+                              className="w-full py-3.5 rounded-xl border-2 font-display text-sm font-extrabold tracking-widest uppercase cursor-pointer transition-all shadow-md"
                               style={{
                                 borderColor: env.themeColor,
                                 background: `${env.themeColor}15`,

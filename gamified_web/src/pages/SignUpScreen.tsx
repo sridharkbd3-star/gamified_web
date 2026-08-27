@@ -12,9 +12,11 @@ import { getStoredUsers, saveStoredUsers, hashPassword, saveUserGameState, saveS
 import { CharacterReveal } from '../components/story/CharacterReveal';
 
 import { LanguageSelector } from '../components/ui/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 
 export const SignUpScreen: React.FC = () => {
   const { navigateTo, dispatch } = useGameState();
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -245,7 +247,7 @@ export const SignUpScreen: React.FC = () => {
                   boxShadow: 'var(--glow-primary)',
                 }}
               >
-                {isSubmitting ? 'Enlisting Terminal...' : 'Complete Enlistment'}
+                {isSubmitting ? t('auth.enlisting', 'Enlisting Terminal...') : t('auth.createProfile', 'Complete Enlistment')}
               </button>
             </form>
 

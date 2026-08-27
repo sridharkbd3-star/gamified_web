@@ -14,6 +14,8 @@ import type { SceneName } from '../types';
 
 // Scenes that provide their own full-screen environment
 const STORY_SCENES: SceneName[] = [
+  'LANGUAGE_SELECTION',
+  'TEACHER_DASHBOARD',
   'INTRO',
   'TIME_PORTAL',
   'FUTURE_VISION',

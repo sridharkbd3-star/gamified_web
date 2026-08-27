@@ -20,8 +20,11 @@ import { MainInterface } from './pages/MainInterface';
 import { DomainWorld } from './pages/DomainWorld';
 import { FinalStoryJourney } from './pages/FinalStoryJourney';
 import { LandingScreen } from './pages/LandingScreen';
+import { LanguageSelectionScreen } from './pages/LanguageSelectionScreen';
 import { SignInScreen } from './pages/SignInScreen';
+import { TeacherSignInScreen } from './pages/TeacherSignInScreen';
 import { SignUpScreen } from './pages/SignUpScreen';
+import { TeacherDashboard } from './pages/TeacherDashboard';
 import type { SceneName } from './types';
 
 // ----------------------------------------------------------
@@ -32,14 +35,23 @@ function SceneRouter() {
   const isAuthenticated = !!state.currentUserEmail;
 
   React.useEffect(() => {
-    const publicScenes: SceneName[] = ['LANDING', 'SIGN_IN', 'SIGN_UP', 'FOUNDATION'];
+    const publicScenes: SceneName[] = ['LANGUAGE_SELECTION', 'LANDING', 'SIGN_IN', 'TEACHER_SIGN_IN', 'SIGN_UP', 'FOUNDATION'];
     if (!isAuthenticated && !publicScenes.includes(state.currentScene)) {
       navigateTo('LANDING');
+      return;
     }
-  }, [isAuthenticated, state.currentScene, navigateTo]);
+
+    if (isAuthenticated) {
+      if (state.userRole === 'teacher' && state.currentScene !== 'TEACHER_DASHBOARD' && !publicScenes.includes(state.currentScene)) {
+        navigateTo('TEACHER_DASHBOARD');
+      } else if (state.userRole === 'student' && state.currentScene === 'TEACHER_DASHBOARD') {
+        navigateTo('MAIN_INTERFACE');
+      }
+    }
+  }, [isAuthenticated, state.userRole, state.currentScene, navigateTo]);
 
   // Protect private screens with a loading redirection overlay
-  const publicScenes: SceneName[] = ['LANDING', 'SIGN_IN', 'SIGN_UP', 'FOUNDATION'];
+  const publicScenes: SceneName[] = ['LANGUAGE_SELECTION', 'LANDING', 'SIGN_IN', 'TEACHER_SIGN_IN', 'SIGN_UP', 'FOUNDATION'];
   if (!isAuthenticated && !publicScenes.includes(state.currentScene)) {
     return (
       <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-black text-cyan-400 font-display text-xs tracking-[0.2em] uppercase select-none">
@@ -55,12 +67,18 @@ function SceneRouter() {
 function renderScene(scene: SceneName): React.ReactElement {
   switch (scene) {
     // ── Auth & Entrance ──
+    case 'LANGUAGE_SELECTION':
+      return <LanguageSelectionScreen />;
     case 'LANDING':
       return <LandingScreen />;
     case 'SIGN_IN':
       return <SignInScreen />;
+    case 'TEACHER_SIGN_IN':
+      return <TeacherSignInScreen />;
     case 'SIGN_UP':
       return <SignUpScreen />;
+    case 'TEACHER_DASHBOARD':
+      return <TeacherDashboard />;
 
     // ── Phase 1 ──
     case 'FOUNDATION':
@@ -112,9 +130,12 @@ function renderScene(scene: SceneName): React.ReactElement {
 
 // Story scenes that manage their own full-screen environment
 const STORY_SCENES: SceneName[] = [
+  'LANGUAGE_SELECTION',
   'LANDING',
   'SIGN_IN',
+  'TEACHER_SIGN_IN',
   'SIGN_UP',
+  'TEACHER_DASHBOARD',
   'INTRO',
   'TIME_PORTAL',
   'FUTURE_VISION',
