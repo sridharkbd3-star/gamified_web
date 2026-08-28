@@ -1,6 +1,6 @@
 // ============================================================
 // S.H.I.E.L.D. Platform — Futuristic Subject-Specific AI Chatbot UI
-// Natural ChatGPT-Style Educational Assistant (Internal Web Search)
+// Educational Assistant for STEM Learning
 // ============================================================
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -122,7 +122,7 @@ export const ShieldAIChatbot: React.FC<ShieldAIChatbotProps> = ({
     };
 
     try {
-      // Send request to secure backend API (runs web search internally when needed)
+      // Send request to secure backend API
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -179,47 +179,6 @@ export const ShieldAIChatbot: React.FC<ShieldAIChatbotProps> = ({
   const renderFormattedMessageText = (text: string) => {
     if (!text) return null;
 
-    const parts = text.split('\n---\n');
-    const mainText = parts[0];
-    const sourcesText = parts.length > 1 ? parts.slice(1).join('\n---\n') : null;
-
-    const formatLine = (line: string, index: number) => {
-      const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
-      const elements: React.ReactNode[] = [];
-      let lastIdx = 0;
-      let match;
-
-      while ((match = linkRegex.exec(line)) !== null) {
-        if (match.index > lastIdx) {
-          elements.push(...formatBoldText(line.substring(lastIdx, match.index), index));
-        }
-        const label = match[1];
-        const url = match[2];
-        elements.push(
-          <a
-            key={`link-${index}-${match.index}`}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-cyan-400 underline hover:text-cyan-300 transition-colors font-bold break-all inline-flex items-center gap-1"
-          >
-            {label} ↗
-          </a>
-        );
-        lastIdx = linkRegex.lastIndex;
-      }
-
-      if (lastIdx < line.length) {
-        elements.push(...formatBoldText(line.substring(lastIdx), index));
-      }
-
-      return (
-        <p key={`line-${index}`} className="mb-1 leading-relaxed">
-          {elements.length > 0 ? elements : line}
-        </p>
-      );
-    };
-
     const formatBoldText = (str: string, lineIndex: number): React.ReactNode[] => {
       const boldRegex = /\*\*([^*]+)\*\*/g;
       const parts: React.ReactNode[] = [];
@@ -245,12 +204,11 @@ export const ShieldAIChatbot: React.FC<ShieldAIChatbotProps> = ({
 
     return (
       <div className="flex flex-col gap-1 text-xs">
-        <div>{mainText.split('\n').map((line, idx) => formatLine(line, idx))}</div>
-        {sourcesText && (
-          <div className="mt-2 pt-2 border-t border-cyan-500/20 text-[10px] text-cyan-300/90 font-display">
-            {sourcesText.split('\n').map((line, idx) => formatLine(line, idx + 1000))}
-          </div>
-        )}
+        {text.split('\n').map((line, idx) => (
+          <p key={`line-${idx}`} className="mb-1 leading-relaxed">
+            {formatBoldText(line, idx)}
+          </p>
+        ))}
       </div>
     );
   };

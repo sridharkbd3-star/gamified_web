@@ -1,6 +1,6 @@
 // ============================================================
 // S.H.I.E.L.D. Platform — Teacher Access (Teacher Login Screen)
-// Futuristic S.H.I.E.L.D. Universe Teacher Portal Login Page
+// Futuristic S.H.I.E.L.D. Universe Teacher Portal Login Page with Google OAuth
 // ============================================================
 
 import React, { useState, useCallback } from 'react';
@@ -16,13 +16,37 @@ import {
   Zap,
   Radio,
   Lock,
-  Activity
+  Activity,
+  Loader2,
 } from 'lucide-react';
 import { useGameState } from '../context/GameStateContext';
 import { INITIAL_GAME_STATE } from '../context/GameStateContext';
+import { saveUserGameState, saveSessionEmail } from '../utils/gameStorage';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
 import { staggerContainer, staggerChild } from '../animations/variants';
+import { authenticateWithGoogle } from '../utils/googleAuth';
 import type { DomainId, StoneId } from '../types';
+
+const GoogleIcon = () => (
+  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+    <path
+      fill="#EA4335"
+      d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.6 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.9C6.2 7.5 8.9 5 12 5z"
+    />
+    <path
+      fill="#4285F4"
+      d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.3 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.6 7.3C.6 9.3 0 11.6 0 14s.6 4.7 1.6 6.7l3.7-2.9c-.6-.8-1-1.9-1-3z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.5-6.7-5.3L1.6 16C3.5 19.8 7.4 22.4 12 23z"
+    />
+  </svg>
+);
 
 export const TeacherSignInScreen: React.FC = () => {
   const { navigateTo, dispatch } = useGameState();
@@ -31,6 +55,7 @@ export const TeacherSignInScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [validationError, setValidationError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState<string | null>(null);
 
   // Mouse Parallax for Desktop Spatial Environment
@@ -61,13 +86,13 @@ export const TeacherSignInScreen: React.FC = () => {
   }, [mouseX, mouseY]);
 
   // Execute teacher login sequence
-  const triggerSuccessfulLogin = (instructorName: string) => {
+  const triggerSuccessfulLogin = (instructorName: string, customEmail?: string) => {
     const cleanName = instructorName.trim() || 'Dr. Agent Sterling';
     setLoginSuccess(cleanName);
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const email = `${cleanName.toLowerCase().replace(/\s+/g, '.')}@shield-faculty.gov`;
+      const email = customEmail || `${cleanName.toLowerCase().replace(/\s+/g, '.')}@shield-faculty.gov`;
 
       const newProgressState = {
         ...INITIAL_GAME_STATE,
@@ -84,6 +109,9 @@ export const TeacherSignInScreen: React.FC = () => {
           collectedStones: ['science-stone', 'technology-stone', 'engineering-stone', 'mathematics-stone'] as StoneId[],
         },
       };
+
+      saveUserGameState(email, newProgressState);
+      saveSessionEmail(email);
 
       dispatch({
         type: 'LOGIN_USER',
@@ -111,6 +139,25 @@ export const TeacherSignInScreen: React.FC = () => {
     triggerSuccessfulLogin(trimmedId);
   };
 
+  const handleGoogleLogin = async () => {
+    setValidationError('');
+    setIsGoogleLoading(true);
+
+    try {
+      const res = await authenticateWithGoogle('teacher');
+      if (res.success && res.user) {
+        triggerSuccessfulLogin(res.user.name, res.user.email);
+      } else {
+        setValidationError(res.message || 'TEACHER ACCESS REQUIRES AUTHORIZATION. PLEASE CONTACT THE S.H.I.E.L.D. ADMINISTRATOR.');
+      }
+    } catch (err) {
+      console.error('[Teacher Google Auth Error]:', err);
+      setValidationError('AUTHENTICATION FAILED. PLEASE TRY AGAIN.');
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
   const handleDemoMode = () => {
     setValidationError('');
     triggerSuccessfulLogin('PROFESSOR XAVIER');
@@ -129,11 +176,7 @@ export const TeacherSignInScreen: React.FC = () => {
         fontFamily: 'var(--font-body)',
       }}
     >
-      {/* ============================================================
-          LAYER 0: ATMOSPHERIC DEEP SPACE & GRID BACKGROUND
-          ============================================================ */}
-
-      {/* Perspective Grid Plane */}
+      {/* Background Grid */}
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
@@ -147,55 +190,14 @@ export const TeacherSignInScreen: React.FC = () => {
         }}
       />
 
-      {/* Atmospheric Energy Glow Spots */}
+      {/* Glow Effects */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] sm:w-[750px] sm:h-[750px] rounded-full bg-purple-600/15 blur-[150px] pointer-events-none animate-pulse"
         style={{ animationDuration: '6s' }}
       />
-      <div className="absolute top-1/4 left-1/3 w-[400px] h-[400px] rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-[450px] h-[450px] rounded-full bg-amber-500/10 blur-[150px] pointer-events-none" />
 
-      {/* Floating Spatial Dust Particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40 z-0">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-purple-300"
-            style={{
-              width: Math.random() * 3 + 1 + 'px',
-              height: Math.random() * 3 + 1 + 'px',
-              top: Math.random() * 100 + '%',
-              left: Math.random() * 100 + '%',
-              boxShadow: '0 0 8px rgba(123, 47, 255, 0.8)',
-            }}
-            animate={{
-              y: [0, -30, 0],
-              opacity: [0.2, 0.8, 0.2],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 5,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: Math.random() * 3,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Scanline Overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none z-1 opacity-15"
-        style={{
-          background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%)',
-          backgroundSize: '100% 4px',
-        }}
-      />
-
-      {/* ============================================================
-          HEADER BAR
-          ============================================================ */}
+      {/* HEADER BAR */}
       <header className="relative z-30 w-full px-6 py-4 md:px-10 flex items-center justify-between backdrop-blur-md bg-[#030308]/40 border-b border-purple-500/20 shrink-0">
-        {/* Top-left: S.H.I.E.L.D. TEACHER ACCESS */}
         <div className="flex items-center gap-3.5 cursor-pointer" onClick={handleBackToEntry}>
           <div className="relative w-9 h-9 rounded-lg border border-purple-500/50 flex items-center justify-center bg-[#0d0d1a] shadow-[0_0_15px_rgba(123,47,255,0.3)]">
             <Shield size={18} className="text-purple-400" />
@@ -211,7 +213,6 @@ export const TeacherSignInScreen: React.FC = () => {
           </div>
         </div>
 
-        {/* Top-center status: AUTHENTICATION GATEWAY ONLINE | ENCRYPTION: LEVEL 5 */}
         <div className="hidden lg:flex items-center gap-6 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-purple-950/20 backdrop-blur-sm text-[9px] font-display tracking-widest text-cyan-300">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -224,7 +225,6 @@ export const TeacherSignInScreen: React.FC = () => {
           </span>
         </div>
 
-        {/* Top-right: Language & Return */}
         <div className="flex items-center gap-3">
           <LanguageSelector />
           <button
@@ -237,14 +237,11 @@ export const TeacherSignInScreen: React.FC = () => {
         </div>
       </header>
 
-      {/* ============================================================
-          SURROUNDING SPATIAL 3D GRAPHICS (Tesseract Visual Preview)
-          ============================================================ */}
+      {/* 3D Spatial Wireframe Background */}
       <motion.div
         style={{ x: layer1X, y: layer1Y, rotateX: spatialRotateX, rotateY: spatialRotateY }}
         className="absolute inset-0 flex items-center justify-center pointer-events-none z-5 overflow-hidden"
       >
-        {/* Outer Rotating Holographic Ring */}
         <div
           className="w-[380px] h-[380px] sm:w-[500px] sm:h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px] rounded-full border border-purple-500/15 absolute animate-spin"
           style={{
@@ -254,80 +251,6 @@ export const TeacherSignInScreen: React.FC = () => {
           }}
         />
 
-        {/* Middle Rotating Cyan Ring */}
-        <div
-          className="w-[320px] h-[320px] sm:w-[440px] sm:h-[440px] md:w-[540px] md:h-[540px] lg:w-[620px] lg:h-[620px] rounded-full border border-cyan-400/20 absolute animate-spin"
-          style={{
-            animationDuration: '35s',
-            animationDirection: 'reverse',
-          }}
-        />
-
-        {/* Futuristic SVG Tesseract Wireframe Visualizer */}
-        <motion.div
-          style={{ x: layer2X, y: layer2Y }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-35 md:opacity-45"
-        >
-          <svg
-            viewBox="0 0 400 400"
-            className="w-[300px] h-[300px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] filter drop-shadow-[0_0_30px_rgba(123,47,255,0.3)]"
-          >
-            <defs>
-              <linearGradient id="teacherTesseractGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#7b2fff" stopOpacity="0.85" />
-                <stop offset="50%" stopColor="#00e5ff" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#c59b27" stopOpacity="0.9" />
-              </linearGradient>
-              <linearGradient id="teacherTesseractGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#c59b27" stopOpacity="0.9" />
-                <stop offset="100%" stopColor="#7b2fff" stopOpacity="0.7" />
-              </linearGradient>
-            </defs>
-
-            {/* Tesseract Outer Polygon Frame */}
-            <motion.g
-              animate={{ rotate: 360 }}
-              transition={{ duration: 75, repeat: Infinity, ease: 'linear' }}
-              style={{ transformOrigin: '200px 200px' }}
-            >
-              <polygon
-                points="200,30 350,115 350,285 200,370 50,285 50,115"
-                fill="none"
-                stroke="url(#teacherTesseractGrad1)"
-                strokeWidth="1.5"
-                strokeDasharray="8 4"
-              />
-              <circle cx="200" cy="30" r="4" fill="#7b2fff" />
-              <circle cx="350" cy="115" r="4" fill="#00e5ff" />
-              <circle cx="350" cy="285" r="4" fill="#c59b27" />
-              <circle cx="200" cy="370" r="4" fill="#7b2fff" />
-              <circle cx="50" cy="285" r="4" fill="#00e5ff" />
-              <circle cx="50" cy="115" r="4" fill="#c59b27" />
-            </motion.g>
-
-            {/* Inner Hypercube Wireframe */}
-            <motion.g
-              animate={{ rotate: -360 }}
-              transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
-              style={{ transformOrigin: '200px 200px' }}
-            >
-              <polygon
-                points="200,95 285,145 285,255 200,305 115,255 115,145"
-                fill="rgba(13, 13, 26, 0.3)"
-                stroke="url(#teacherTesseractGrad2)"
-                strokeWidth="1.5"
-              />
-              <line x1="200" y1="30" x2="200" y2="95" stroke="rgba(123, 47, 255, 0.4)" strokeWidth="1" />
-              <line x1="350" y1="115" x2="285" y2="145" stroke="rgba(0, 229, 255, 0.4)" strokeWidth="1" />
-              <line x1="350" y1="285" x2="285" y2="255" stroke="rgba(197, 155, 39, 0.4)" strokeWidth="1" />
-              <line x1="200" y1="370" x2="200" y2="305" stroke="rgba(123, 47, 255, 0.4)" strokeWidth="1" />
-              <line x1="50" y1="285" x2="115" y2="255" stroke="rgba(0, 229, 255, 0.4)" strokeWidth="1" />
-              <line x1="50" y1="115" x2="115" y2="145" stroke="rgba(197, 155, 39, 0.4)" strokeWidth="1" />
-            </motion.g>
-          </svg>
-        </motion.div>
-
-        {/* Floating Corner HUD elements */}
         <div className="absolute inset-0 pointer-events-none p-6 md:p-12 flex flex-col justify-between">
           <div className="flex justify-between items-start w-full">
             <motion.div
@@ -353,9 +276,7 @@ export const TeacherSignInScreen: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* ============================================================
-          MAIN HERO LOGIN CARD (CENTERED LAYOUT)
-          ============================================================ */}
+      {/* MAIN HERO CARD */}
       <main className="relative z-20 flex-1 w-full max-w-lg mx-auto px-4 sm:px-6 py-6 md:py-10 flex flex-col items-center justify-center text-center self-center my-auto">
         <motion.div
           variants={staggerContainer}
@@ -363,7 +284,6 @@ export const TeacherSignInScreen: React.FC = () => {
           animate="visible"
           className="w-full flex flex-col items-center gap-5"
         >
-          {/* Top Title & Subtitle: Shield Icon, S.H.I.E.L.D. TEACHER ACCESS */}
           <motion.div variants={staggerChild} className="flex flex-col items-center gap-2">
             <div
               className="w-14 h-14 rounded-2xl border border-purple-500/50 flex items-center justify-center bg-[#0d0d1a] shadow-[0_0_25px_rgba(123,47,255,0.35)]"
@@ -373,9 +293,7 @@ export const TeacherSignInScreen: React.FC = () => {
 
             <h1
               className="font-display text-3xl sm:text-4xl tracking-[0.22em] font-extrabold uppercase text-white leading-none mt-1"
-              style={{
-                textShadow: '0 0 30px rgba(123, 47, 255, 0.45)',
-              }}
+              style={{ textShadow: '0 0 30px rgba(123, 47, 255, 0.45)' }}
             >
               S.H.I.E.L.D.
             </h1>
@@ -385,21 +303,18 @@ export const TeacherSignInScreen: React.FC = () => {
             </p>
           </motion.div>
 
-          {/* Main Futuristic Login Card */}
           <motion.div
             variants={staggerChild}
             className="relative w-full rounded-2xl border border-purple-500/35 bg-[#090c22]/85 backdrop-blur-xl p-6 sm:p-8 shadow-[0_0_40px_rgba(123,47,255,0.2)] flex flex-col gap-5 overflow-hidden"
           >
-            {/* Card Top Border Light Beam */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-purple-400 to-transparent opacity-80" />
 
-            {/* Futuristic Corner Accents */}
             <div className="absolute top-2 left-2 w-2 h-2 border-t-2 border-l-2 border-purple-400" />
             <div className="absolute top-2 right-2 w-2 h-2 border-t-2 border-r-2 border-purple-400" />
             <div className="absolute bottom-2 left-2 w-2 h-2 border-b-2 border-l-2 border-purple-400" />
             <div className="absolute bottom-2 right-2 w-2 h-2 border-b-2 border-r-2 border-purple-400" />
 
-            {/* Login Success HUD Confirmation Overlay */}
+            {/* Success Overlay */}
             <AnimatePresence>
               {loginSuccess && (
                 <motion.div
@@ -434,24 +349,23 @@ export const TeacherSignInScreen: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Card Section Header: TEACHER LOGIN & "ENTER CREDENTIALS TO ACCESS TEACHER PORTAL" */}
             <div className="flex flex-col items-center gap-1">
               <h2 className="font-display text-base sm:text-lg tracking-[0.25em] font-extrabold text-white uppercase">
                 TEACHER LOGIN
               </h2>
               <span className="text-[9px] font-display tracking-[0.16em] text-slate-400 uppercase font-semibold">
-                "ENTER CREDENTIALS TO ACCESS TEACHER PORTAL"
+                ENTER CREDENTIALS TO ACCESS TEACHER PORTAL
               </span>
             </div>
 
-            {/* HUD Inline Validation Message */}
+            {/* Validation Banner */}
             <AnimatePresence>
               {validationError && (
                 <motion.div
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
-                  className="px-3.5 py-2.5 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-300 font-display text-[10px] tracking-wider uppercase font-semibold flex items-center justify-center gap-2 shadow-sm"
+                  className="px-3.5 py-2.5 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-300 font-display text-[10px] tracking-wider uppercase font-semibold flex items-center justify-center gap-2 shadow-sm text-left"
                 >
                   <AlertTriangle size={15} className="text-amber-400 shrink-0" />
                   <span>{validationError}</span>
@@ -459,9 +373,8 @@ export const TeacherSignInScreen: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Login Form */}
+            {/* Form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left w-full">
-              {/* Field 1: TEACHER ID / USERNAME */}
               <div className="flex flex-col gap-1.5">
                 <label className="font-display text-[10px] tracking-[0.2em] uppercase font-bold text-purple-300 flex items-center justify-between">
                   <span>TEACHER ID / USERNAME</span>
@@ -483,7 +396,6 @@ export const TeacherSignInScreen: React.FC = () => {
                 </div>
               </div>
 
-              {/* Field 2: PASSWORD */}
               <div className="flex flex-col gap-1.5">
                 <label className="font-display text-[10px] tracking-[0.2em] uppercase font-bold text-purple-300 flex items-center justify-between">
                   <span>PASSWORD</span>
@@ -505,11 +417,10 @@ export const TeacherSignInScreen: React.FC = () => {
                 </div>
               </div>
 
-              {/* Main button: ENTER TEACHER PORTAL → */}
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="relative group w-full mt-2 py-3.5 rounded-xl text-xs sm:text-sm font-display tracking-[0.2em] uppercase text-white font-bold transition-all duration-300 shadow-[0_0_25px_rgba(123,47,255,0.35)] hover:shadow-[0_0_35px_rgba(123,47,255,0.6)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 overflow-hidden"
+                disabled={isSubmitting || isGoogleLoading}
+                className="relative group w-full mt-1 py-3.5 rounded-xl text-xs sm:text-sm font-display tracking-[0.2em] uppercase text-white font-bold transition-all duration-300 shadow-[0_0_25px_rgba(123,47,255,0.35)] hover:shadow-[0_0_35px_rgba(123,47,255,0.6)] hover:scale-[1.01] active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 overflow-hidden"
                 style={{
                   background: 'linear-gradient(90deg, #6b21a8, #7b2fff, #00e5ff)',
                 }}
@@ -518,7 +429,33 @@ export const TeacherSignInScreen: React.FC = () => {
                 <span className="relative z-10">ENTER TEACHER PORTAL →</span>
               </button>
 
-              {/* Below: NEW TEACHER? CREATE TEACHER PROFILE */}
+              <div className="relative flex items-center justify-center my-1.5">
+                <div className="w-full border-t border-purple-500/20" />
+                <span className="absolute bg-[#090c22] px-3 text-[8px] font-display tracking-widest text-slate-500 uppercase">
+                  OR
+                </span>
+              </div>
+
+              {/* GOOGLE OAUTH BUTTON */}
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={isSubmitting || isGoogleLoading}
+                className="w-full py-3 rounded-xl text-xs font-display font-bold tracking-[0.18em] uppercase transition-all duration-300 border border-purple-500/40 bg-[#0c0924] hover:bg-purple-900/30 text-purple-200 hover:border-purple-400 hover:shadow-[0_0_20px_rgba(123,47,255,0.35)] flex items-center justify-center gap-2.5 cursor-pointer shadow-md"
+              >
+                {isGoogleLoading ? (
+                  <>
+                    <Loader2 size={15} className="animate-spin text-purple-400" />
+                    <span>VERIFYING FACULTY AUTHORIZATION...</span>
+                  </>
+                ) : (
+                  <>
+                    <GoogleIcon />
+                    <span>CONTINUE WITH GOOGLE</span>
+                  </>
+                )}
+              </button>
+
               <div className="flex justify-center items-center pt-1 text-[10px] font-display text-slate-400">
                 <span>NEW TEACHER?</span>
                 <button
@@ -530,20 +467,11 @@ export const TeacherSignInScreen: React.FC = () => {
                 </button>
               </div>
 
-              {/* Divider: OR */}
-              <div className="relative flex items-center justify-center my-1">
-                <div className="w-full border-t border-purple-500/20" />
-                <span className="absolute bg-[#090c22] px-3 text-[8px] font-display tracking-widest text-slate-500 uppercase">
-                  OR
-                </span>
-              </div>
-
-              {/* DEMO MODE */}
               <button
                 type="button"
                 onClick={handleDemoMode}
-                disabled={isSubmitting}
-                className="w-full py-2.5 rounded-xl text-[10px] sm:text-xs font-display tracking-[0.2em] uppercase text-amber-300 font-bold transition-all bg-amber-950/20 hover:bg-amber-900/35 border border-amber-500/40 hover:border-amber-400 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                disabled={isSubmitting || isGoogleLoading}
+                className="w-full py-2.5 rounded-xl text-[10px] sm:text-xs font-display tracking-[0.2em] uppercase text-amber-300 font-bold transition-all bg-amber-950/20 hover:bg-amber-900/35 border border-amber-500/40 hover:border-amber-400 shadow-sm flex items-center justify-center gap-2 cursor-pointer mt-1"
               >
                 <Sparkles size={13} className="text-amber-400" />
                 <span>DEMO MODE</span>
@@ -551,7 +479,6 @@ export const TeacherSignInScreen: React.FC = () => {
             </form>
           </motion.div>
 
-          {/* Bottom: ← RETURN TO ENTRY */}
           <motion.div variants={staggerChild} className="pt-1">
             <button
               type="button"

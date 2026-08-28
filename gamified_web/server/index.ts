@@ -1,12 +1,13 @@
 // ============================================================
 // S.H.I.E.L.D. Platform — Backend Server Entry Point
-// Express API Server for Web Search & AI Chatbot Integration
+// Express API Server for AI Chatbot & Google OAuth Integration
 // ============================================================
 
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { router as chatRouter } from './routes/chat.ts';
+import { router as authRouter } from './routes/auth.ts';
 
 dotenv.config();
 
@@ -22,13 +23,14 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ONLINE',
     system: 'S.H.I.E.L.D. Backend Service',
-    webSearchConfigured: !!(process.env.WEB_SEARCH_API_KEY || process.env.TAVILY_API_KEY || process.env.SERPER_API_KEY),
+    googleAuthConfigured: !!(process.env.GOOGLE_CLIENT_ID),
     timestamp: new Date().toISOString(),
   });
 });
 
-// Chatbot API Endpoint
+// API Endpoints
 app.use('/api/chat', chatRouter);
+app.use('/api/auth', authRouter);
 
 // Start Express Server
 if (process.env.NODE_ENV !== 'test') {

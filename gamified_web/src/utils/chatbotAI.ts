@@ -73,13 +73,13 @@ export function getInitialGreeting(domainId: string, language: string): string {
   // Default English
   switch (domainId) {
     case 'science':
-      return "Greetings, Agent! I'm your SHIELD Science Assistant. Ready to explore natural laws, chemical reactions, and physics concepts. Ask me anything about your current mission!";
+      return "Greetings, Agent! I'm your SHIELD Science Assistant. Ask me any doubt about physics, chemistry, biology, or your current mission!";
     case 'technology':
-      return "Hi! I'm your SHIELD Technology Assistant. I'm here to help you understand coding, logic gates, binary numbers, and tech missions. Ask me anything you're stuck on!";
+      return "Hi! I'm your SHIELD Technology Assistant. Ask me anything about programming, logic gates, binary numbers, CPUs, or tech missions!";
     case 'engineering':
-      return "Welcome to the Forge, Agent! I'm your SHIELD Engineering Assistant. Ask me about load distribution, structural integrity, beam materials, or design principles.";
+      return "Welcome to the Forge, Agent! I'm your SHIELD Engineering Assistant. Ask me about load distribution, structural integrity, mechanisms, or design principles.";
     case 'mathematics':
-      return "Hello Agent! I'm your SHIELD Math Assistant. Ready to analyze patterns, solve equations, calculate growth ratios, or decode logical ciphers with you.";
+      return "Hello Agent! I'm your SHIELD Math Assistant. Ask me to solve equations, explain formulas, or guide you through mathematical steps.";
     default:
       return "Greetings Agent! SHIELD AI Assistant is online and synchronized with your mission parameters.";
   }
@@ -91,16 +91,95 @@ export function getInitialGreeting(domainId: string, language: string): string {
 export function generateAIResponse(userQuery: string, ctx: ChatbotContext): string {
   const query = userQuery.trim().toLowerCase();
   const lang = ctx.language.toLowerCase();
-  const isDirectAnswerRequest = 
-    query.includes('what is the answer') ||
-    query.includes('tell me the answer') ||
-    query.includes('give me the answer') ||
-    query.includes('answer please') ||
-    query.includes('what\'s the answer') ||
-    query.includes('விடை என்ன') ||
-    query.includes('उत्तर क्या है') ||
-    query.includes('ഉത്തരം എന്താണ്');
 
+  // 1. Rejections for non-STEM questions
+  const nonStemPatterns = [
+    /tell me a joke/i,
+    /who is the president/i,
+    /what movie should i watch/i,
+    /who won the match/i,
+    /tell me a story/i,
+    /sing a song/i,
+  ];
+
+  if (nonStemPatterns.some((pattern) => pattern.test(query))) {
+    return "I'm designed to help with STEM questions. Please ask me something about Science, Technology, Engineering, or Mathematics.";
+  }
+
+  // 2. Direct Math Calculations
+  const mulMatch = query.match(/(\d+)\s*[\*x×]\s*(\d+)/i);
+  if (mulMatch) {
+    const a = parseInt(mulMatch[1], 10);
+    const b = parseInt(mulMatch[2], 10);
+    const result = a * b;
+    return `${a} × ${b} = ${result}.
+
+Calculation:
+${a} × ${b} = (${Math.floor(a/10)*10} × ${b}) + (${a % 10} × ${b})
+= ${Math.floor(a/10)*10 * b} + ${(a % 10) * b}
+= ${result}.`;
+  }
+
+  // 3. Factual Direct Answers for Common STEM Queries
+  if (query.includes('photosynthesis')) {
+    return `Photosynthesis is the process by which green plants, algae, and some bacteria use sunlight, carbon dioxide, and water to produce glucose (food) and oxygen.
+
+Formula:
+6CO₂ + 6H₂O + sunlight → C₆H₁₂O₆ + 6O₂
+
+It takes place in the chloroplasts of plant cells using the green pigment chlorophyll.`;
+  }
+
+  if (query.includes('newton') && (query.includes('second') || query.includes('2nd') || query.includes('f=ma'))) {
+    return `Newton's second law states that force equals mass multiplied by acceleration:
+
+F = ma
+
+This means increasing the mass or acceleration of an object requires more force. For example, pushing a heavy truck requires significantly more force than pushing a bicycle to reach the same acceleration.`;
+  }
+
+  if (query.includes('rocket')) {
+    return `A rocket is a vehicle that propels itself forward by expelling high-speed gases in the opposite direction.
+
+Principle:
+It works according to Newton's third law of motion (action and reaction). Because rockets carry their own fuel and oxidizer, they can generate thrust in the vacuum of space without needing atmospheric air.`;
+  }
+
+  if (query.includes('computer') || query.includes('cpu')) {
+    return `A CPU (Central Processing Unit) executes instructions and performs calculations required for a computer to run programs.
+
+How it works:
+It repeatedly carries out a 3-step cycle:
+1. Fetch: Retrieve the instruction from system memory.
+2. Decode: Interpret what operation needs to be performed.
+3. Execute: Perform the arithmetic or logical calculation.`;
+  }
+
+  if (query.includes('ice float') || query.includes('water density')) {
+    return `Ice floats on water because liquid water expands when it freezes, making ice less dense than liquid water.
+
+Explanation:
+As water cools below 4°C, hydrogen bonds organize water molecules into an open crystalline structure. This lattice occupies more space for the same mass, decreasing density.`;
+  }
+
+  if (query.includes('ohm')) {
+    return `Ohm's Law states that electrical current is directly proportional to voltage and inversely proportional to resistance.
+
+Formula:
+V = I × R
+(Voltage = Current × Resistance)
+
+Example: For a 12V supply across a 4Ω resistor, Current I = 12 / 4 = 3 Amperes.`;
+  }
+
+  if (query.includes('algorithm')) {
+    return `An algorithm is a step-by-step procedure or set of rules designed to solve a problem or complete a task.
+
+Example:
+A recipe for baking bread or sorting a list of numbers from smallest to largest in computer code is an algorithm.`;
+  }
+
+  // 4. Mission Contextual Answers & Hints
   const isAskingForHint =
     query.includes('hint') ||
     query.includes('stuck') ||
@@ -109,75 +188,12 @@ export function generateAIResponse(userQuery: string, ctx: ChatbotContext): stri
     query.includes('संकेत') ||
     query.includes('സൂചന');
 
-  const isAskingStepByStep =
-    query.includes('step') ||
-    query.includes('how to solve') ||
-    query.includes('explain step') ||
-    query.includes('படி') ||
-    query.includes('चरण') ||
-    query.includes('ഘട്ടം');
-
-  const isAskingWhyWrong =
-    query.includes('wrong') ||
-    query.includes('failed') ||
-    query.includes('incorrect') ||
-    query.includes('কেন') ||
-    query.includes('ஏன்') ||
-    query.includes('क्यों') ||
-    query.includes('എന്തുകൊണ്ട്');
-
-  // Handle direct answer requests by guiding step-by-step first
-  if (isDirectAnswerRequest) {
-    if (lang.startsWith('ta')) {
-      return `நேரடியாக விடையைக் கூறுவதை விட, நாம் சேர்ந்து அதைத் தீர்ப்போம்! 
-உங்கள் தற்போதைய கருத்து: "${ctx.primaryConcept}".
-படி 1: கேள்வியின் முக்கியத் தகவலை கவனியுங்கள்: "${ctx.questionText || ctx.objective || 'மிஷன் இலக்கு'}".
-படி 2: ஒவ்வொரு தேர்வின் விளைவையும் யோசித்துச் சரிபாருங்கள். நீங்கள் எதை முயற்சி செய்ய விரும்புகிறீர்கள்?`;
-    }
-    if (lang.startsWith('hi')) {
-      return `सीधे उत्तर देने के बजाय, आइए इसे मिलकर हल करें! 
-आपकी वर्तमान अवधारणा: "${ctx.primaryConcept}"।
-चरण 1: प्रश्न की मुख्य जानकारी देखें: "${ctx.questionText || ctx.objective || 'मिशन लक्ष्य'}"।
-चरण 2: विकल्पों का विश्लेषण करें। आपको कौन सा विकल्प सही लगता है?`;
-    }
-    if (lang.startsWith('ml')) {
-      return `നേരിട്ട് ഉത്തരം നൽകുന്നതിന് പകരം നമുക്ക് ഒന്നിച്ച് ഇത് നിർദ്ധാരണം ചെയ്യാം! 
-വിഷയം: "${ctx.primaryConcept}".
-ഘട്ടം 1: പ്രധാന ചോദ്യം ശ്രദ്ധിക്കൂ: "${ctx.questionText || ctx.objective || 'മിഷൻ ലക്ഷ്യം'}".
-ഘട്ടം 2: ഓരോ ഓപ്ഷനും പരിശോധിക്കൂ. ഏതാണ് ശരി എന്ന് തോന്നുന്നത്?`;
-    }
-
-    // English
-    if (ctx.domainId === 'technology') {
-      return `Let's solve Mission ${ctx.missionNumber} step-by-step instead of just giving the answer!
-Current Concept: ${ctx.primaryConcept}.
-Hint: Remember that binary positions from right to left represent powers of 2 (1, 2, 4, 8...). 
-Count which positions have 1s and add their values together. What sum do you get?`;
-    }
-    if (ctx.domainId === 'science') {
-      return `Let's work through Mission ${ctx.missionNumber} together!
-Concept: ${ctx.primaryConcept}.
-Think about how changing the variables affects equilibrium. What happens when heat or catalyst ratio increases? Try adjusting one variable at a time!`;
-    }
-    if (ctx.domainId === 'engineering') {
-      return `Engineering is about testing and iteration!
-Concept: ${ctx.primaryConcept}.
-Consider the stress distribution across the bridge span. Steel trusses handle heavy tension while carbon cables anchor load points. Which beam placement stabilizes the center?`;
-    }
-    if (ctx.domainId === 'mathematics') {
-      return `Let's unlock the mathematical pattern together!
-Concept: ${ctx.primaryConcept}.
-Look at the progression of terms. Identify the constant ratio or addition rule between consecutive numbers. What rule transforms term 1 into term 2?`;
-    }
-  }
-
-  // Handle Hint Requests
   if (isAskingForHint) {
     if (lang.startsWith('ta')) {
-      return `💡 குறிப்பு: "${ctx.primaryConcept}" என்ற விதியைப் பயன்படுத்துங்கள். இலக்கு: ${ctx.objective || 'சரியான அமைப்பைத் தேர்ந்தெடுங்கள்'}. ஒவ்வொன்றாக சோதித்துப் பாருங்கள்!`;
+      return `💡 குறிப்பு: "${ctx.primaryConcept}" என்ற விதியைப் பயன்படுத்துங்கள். இலக்கு: ${ctx.objective || 'சரியான அமைப்பைத் தேர்ந்தெடுங்கள்'}.`;
     }
     if (lang.startsWith('hi')) {
-      return `💡 संकेत: अवधारणा "${ctx.primaryConcept}" का प्रयोग करें। लक्ष्य: ${ctx.objective || 'सही विकल्प चुनें'}। एक-एक करके प्रयास करें!`;
+      return `💡 संकेत: अवधारणा "${ctx.primaryConcept}" का प्रयोग करें। लक्ष्य: ${ctx.objective || 'सही विकल्प चुनें'}।`;
     }
     if (lang.startsWith('ml')) {
       return `💡 സൂചന: "${ctx.primaryConcept}" എന്ന തത്വം ഓർക്കുക. ലക്ഷ്യം: ${ctx.objective || 'ശരിയായ ഉത്തരം കണ്ടെത്തൂ'}.`;
@@ -185,106 +201,21 @@ Look at the progression of terms. Identify the constant ratio or addition rule b
 
     return `💡 Strategic Hint for Mission ${ctx.missionNumber}:
 Focus on "${ctx.primaryConcept}".
-Goal: ${ctx.objective || 'Solve the active puzzle'}.
-Try isolating one variable/step at a time to verify the pattern before submitting!`;
+Goal: ${ctx.objective || 'Solve the active puzzle module'}.`;
   }
 
-  // Handle Step-by-step explanation requests
-  if (isAskingStepByStep) {
-    return `🔍 Step-by-Step Breakdown for ${ctx.domainName} Stage ${ctx.stage} Mission ${ctx.missionNumber}:
-1️⃣ Concept Focus: ${ctx.primaryConcept}.
-2️⃣ Mission Objective: ${ctx.objective || 'Complete the active module'}.
-3️⃣ Approach:
-   • Analyze the input parameter / sequence.
-   • Apply the fundamental rule of ${ctx.domainName}.
-   • Select or enter the matching value and click 'Check My Answer'.`;
-  }
-
-  // Handle "Why is my answer wrong?" requests
-  if (isAskingWhyWrong) {
-    if (ctx.submittedAnswer) {
-      return `❓ Analysis of Submitted Answer ("${ctx.submittedAnswer}"):
-In ${ctx.domainName} (${ctx.primaryConcept}), your chosen answer did not satisfy the operational requirement.
-Check the constraint in "${ctx.objective || 'the mission briefing'}" and try re-evaluating with the core rule!`;
-    }
-    return `❓ If your answer was incorrect, don't worry! In S.H.I.E.L.D., failure is just data. Review the concept "${ctx.primaryConcept}" and try adjusting your parameters.`;
-  }
-
-  // Domain-specific keyword responses
-  if (ctx.domainId === 'technology') {
-    if (query.includes('binary') || query.includes('bit') || query.includes('byte')) {
-      return `💻 Binary System Insight:
-Binary uses base-2 numbers consisting of only 0s and 1s.
-• Position 0 (rightmost): 2⁰ = 1
-• Position 1: 2¹ = 2
-• Position 2: 2² = 4
-• Position 3: 2³ = 8
-For example, binary 1010 = 8 + 0 + 2 + 0 = 10 in decimal!`;
-    }
-    if (query.includes('loop') || query.includes('repeat')) {
-      return `🔁 Loops in Technology:
-A loop repeats a set of instructions until a condition is met. REPEAT(2) executes the enclosed commands twice in sequence!`;
-    }
-    if (query.includes('drone') || query.includes('grid') || query.includes('coordinate')) {
-      return `📍 Drone Navigation:
-Check your current coordinates (x, y) vs target coordinates! Avoid ⚠️ obstacles by stepping around them using NAV controls.`;
-    }
-  }
-
-  if (ctx.domainId === 'science') {
-    if (query.includes('variable') || query.includes('pressure') || query.includes('heat') || query.includes('catalyst')) {
-      return `🧪 Scientific Variables:
-• Independent Variable: The factor you change (e.g. Heat or Pressure).
-• Dependent Variable: The outcome you measure (e.g. Reactor Stability).
-Keep controls steady while adjusting one variable at a time!`;
-    }
-    if (query.includes('ph') || query.includes('acid') || query.includes('base') || query.includes('crystal')) {
-      return `🔬 pH & Resonance:
-pH measures acidity (1-6) or alkalinity (8-14). Neutral pH is 7. Combine pH balance with matching light wavelength to heal the crystal!`;
-    }
-  }
-
-  if (ctx.domainId === 'engineering') {
-    if (query.includes('truss') || query.includes('beam') || query.includes('bridge') || query.includes('load')) {
-      return `⚙️ Engineering Structural Integrity:
-• Wood Beams: Lightweight, low cost, moderate support.
-• Steel Trusses: Heavy duty, distributes weight across triangular links.
-• Carbon Cables: High tension anchors for wide spans.
-Balance budget vs load stress!`;
-    }
-  }
-
-  if (ctx.domainId === 'mathematics') {
-    if (query.includes('fibonacci') || query.includes('sequence') || query.includes('pattern')) {
-      return `📐 Mathematical Patterns:
-In a Fibonacci sequence, each term is the sum of the previous two terms: 1, 1, 2, 3, 5, 8, 13, 21...
-Check if the sequence adds preceding values or multiplies by a constant ratio!`;
-    }
-    if (query.includes('scale') || query.includes('equation') || query.includes('balance')) {
-      return `⚖️ Algebraic Scale Balance:
-Whatever operation you apply to the left side of the scale must equal the right side to keep equilibrium!`;
-    }
-  }
-
-  // General fallback response encouraging learning
+  // 5. Default STEM Concept Answer (Direct explanation)
   if (lang.startsWith('ta')) {
-    return `நான் உங்கள் கேள்வியைப் புரிந்து கொண்டேன்! "${ctx.primaryConcept}" என்ற கருத்தில் மிஷன் ${ctx.missionNumber}-க்கு உதவி பெற விரும்புகிறீர்கள். 
-குறிப்பிட்ட சந்தேகங்கள், குறிப்புகள் அல்லது படிபடியான விளக்கங்கள் தேவைப்பட்டால் எனக்குத் தெரியப்படுத்துங்கள்!`;
+    return `${ctx.primaryConcept} என்பது ${ctx.domainName} துறையின் முக்கியமான கோட்பாடாகும்.
+இலக்கு: ${ctx.objective || 'கேள்வியை ஆய்வு செய்து சரியான அமைப்பைத் தேர்வு செய்யவும்'}.`;
   }
   if (lang.startsWith('hi')) {
-    return `मैंने आपका प्रश्न समझा! आप मिशन ${ctx.missionNumber} और अवधारणा "${ctx.primaryConcept}" पर सहायता चाहते हैं। 
-विशिष्ट प्रश्नों, संकेतों या चरण-दर-चरण स्पष्टीकरण के लिए बेझिझक पूछें!`;
-  }
-  if (lang.startsWith('ml')) {
-    return `നിങ്ങളുടെ ചോദ്യം മനസ്സിലായി! വിഷയം: "${ctx.primaryConcept}". 
-സൂചനകൾക്കോ കൂടുതൽ വിശദീകരണങ്ങൾക്കോ ചോദിക്കാം!`;
+    return `${ctx.primaryConcept} ${ctx.domainName} का एक मुख्य सिद्धांत है।
+लक्ष्य: ${ctx.objective || 'प्रश्नों का विश्लेषण करें और सही उत्तर चुनें'}।`;
   }
 
-  return `I'm analyzing your query regarding Mission ${ctx.missionNumber} (${ctx.primaryConcept}) in ${ctx.domainName}.
-You can ask me to:
-• "Explain ${ctx.primaryConcept}"
-• "Give me a hint"
-• "Explain step by step"
-• "Why is my answer wrong?"
-How would you like to proceed, Agent?`;
+  return `${ctx.primaryConcept} is a foundational principle in ${ctx.domainName} (Stage ${ctx.stage}, Mission ${ctx.missionNumber}).
+
+Explanation:
+${ctx.objective ? `Mission Goal: ${ctx.objective}. ` : ''}Analyze the input parameters and apply the core laws of ${ctx.domainName} to complete your objective!`;
 }

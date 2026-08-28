@@ -1,57 +1,40 @@
 import { processChatRequest } from '../server/services/aiChatService.ts';
 
 async function runTests() {
-  console.log('--- TEST 1: Photosynthesis in English ---');
-  const res1 = await processChatRequest({
-    message: 'What is photosynthesis?',
-    domainId: 'science',
-    domainName: 'Science',
-    stage: 1,
-    missionNumber: 1,
-    missionTitle: 'M1',
-    primaryConcept: 'Photosynthesis',
-    language: 'en',
-  });
-  console.log('Reply:\n', res1.reply);
+  console.log("=== S.H.I.E.L.D. GEMINI CHATBOT VERIFICATION TESTS ===\n");
 
-  console.log('\n--- TEST 2: Tamil Photosynthesis ---');
-  const res2 = await processChatRequest({
-    message: 'ஒளிச்சேர்க்கை என்றால் என்ன?',
-    domainId: 'science',
-    domainName: 'Science',
-    stage: 1,
-    missionNumber: 1,
-    missionTitle: 'M1',
-    primaryConcept: 'Photosynthesis',
-    language: 'ta',
-  });
-  console.log('Reply:\n', res2.reply);
+  const testQueries = [
+    "What is photosynthesis?",
+    "What is Newton's second law?",
+    "What is a rocket?",
+    "How does a computer work?",
+    "What is 25 × 16?",
+    "Why does ice float on water?",
+    "Explain Ohm's law.",
+    "What is an algorithm?",
+    "Tell me a joke.",
+    "",
+  ];
 
-  console.log('\n--- TEST 3: Binary Explanation ---');
-  const res3 = await processChatRequest({
-    message: 'Why is 1010 equal to 10 in binary?',
-    domainId: 'technology',
-    domainName: 'Technology',
-    stage: 1,
-    missionNumber: 1,
-    missionTitle: 'M1',
-    primaryConcept: 'Binary System',
-    language: 'en',
-  });
-  console.log('Reply:\n', res3.reply);
+  for (let i = 0; i < testQueries.length; i++) {
+    const q = testQueries[i];
+    console.log(`\n--- TEST ${i + 1}: "${q}" ---`);
+    const result = await processChatRequest({
+      message: q,
+      domainId: 'science',
+      domainName: 'Science',
+      stage: 1,
+      missionNumber: 1,
+      missionTitle: 'Planetary Orbits',
+      primaryConcept: 'Gravitational Force',
+      objective: 'Calculate trajectory',
+      language: 'en',
+    });
 
-  console.log('\n--- TEST 4: Explicit Web Search ---');
-  const res4 = await processChatRequest({
-    message: 'Search the web for the latest developments in AI.',
-    domainId: 'technology',
-    domainName: 'Technology',
-    stage: 1,
-    missionNumber: 1,
-    missionTitle: 'M1',
-    primaryConcept: 'AI',
-    language: 'en',
-  });
-  console.log('Reply:\n', res4.reply);
+    console.log(`Success: ${result.success}`);
+    console.log(`Reply:\n${result.reply}`);
+    console.log('-'.repeat(50));
+  }
 }
 
 runTests();

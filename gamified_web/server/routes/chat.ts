@@ -1,6 +1,6 @@
 // ============================================================
 // S.H.I.E.L.D. Platform — API Route: POST /api/chat
-// Secure Chatbot API Handler with Web Search Integration
+// Secure Chatbot API Handler with Gemini Integration
 // ============================================================
 
 import express, { Request, Response } from 'express';
@@ -36,7 +36,6 @@ router.post('/', async (req: Request, res: Response) => {
     return res.status(429).json({
       success: false,
       reply: 'Agent, rate limit reached. Please wait a moment before sending another query.',
-      searchedWeb: false,
     });
   }
 
@@ -60,8 +59,7 @@ router.post('/', async (req: Request, res: Response) => {
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        reply: 'Please provide a valid message.',
-        searchedWeb: false,
+        reply: 'Please enter a valid question.',
       });
     }
 
@@ -87,9 +85,8 @@ router.post('/', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('[SHIELD API /api/chat Error]:', error);
     return res.json({
-      success: true,
-      reply: "I couldn't access the web right now, but I can still help explain the concept using what I know.",
-      searchedWeb: false,
+      success: false,
+      reply: "S.H.I.E.L.D. AI is temporarily unavailable. Please try again in a moment.",
     });
   }
 });
